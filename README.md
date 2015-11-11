@@ -17,7 +17,7 @@ var TestComponent = React.createClass({
   // ...
 
   render: function() {
-    return <SmoothieComponent ref="chart"/>;
+    return <SmoothieComponent ref="chart" width="1000" height="300" />;
   },
 
   componentDidMount: function() {
