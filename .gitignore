@@ -1,0 +1,7 @@
+/node_modules/
+
+# Generated dist file
+/SmoothieComponent.js
+
+# Generated test file
+/test/test.js
