@@ -24,7 +24,7 @@ var SmoothieComponent = React.createClass({
       console.log('Size changed');
       // this.smoothie.resize();
     } else {
-      console.log('Props changed, size the same');
+      // console.log('Props changed, size the same');
     }
   },
   componentWillUnmount: function() {
