@@ -7,7 +7,7 @@ gulp.task('babel', () => {
     .pipe(babel({
       presets: ['es2015', 'react']
     }))
-    .pipe(gulp.dest('SmoothieComponent.js'));
+    .pipe(gulp.dest('.'));
 });
 
 gulp.task('dist', ['babel']);
