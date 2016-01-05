@@ -39,7 +39,7 @@ var TestComponent = React.createClass({
 
 ## Props
 
-`SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor like this: `new smoothie.SmoothieChart(...this.props);`
+`SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor like this: `new smoothie.SmoothieChart(this.props);`
 
 Two extra props can be passed to control the size of the `<canvas>` used:
 

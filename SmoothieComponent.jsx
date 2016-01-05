@@ -10,7 +10,7 @@ var SmoothieComponent = React.createClass({
   },
   componentDidMount: function() {
     if (!this.smoothie)
-      this.smoothie = new smoothie.SmoothieChart(...this.props);
+      this.smoothie = new smoothie.SmoothieChart(this.props);
 
     if (this.canvas)
       this.smoothie.streamTo(this.canvas);
