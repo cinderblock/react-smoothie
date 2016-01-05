@@ -8,6 +8,7 @@
     "url": "git+https://github.com/cinderblock/react-smoothie.git"
   },
   "scripts": {
+    "postversion": "npm publish",
     "prepublish": "gulp dist",
     "postpublish": "git push origin master --tags"
   },
