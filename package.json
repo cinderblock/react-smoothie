@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prepublish": "gulp dist",
-    "postpublish": "git push --tags"
+    "postpublish": "git push origin master --tags"
   },
   "keywords": [
     "smoothie",
