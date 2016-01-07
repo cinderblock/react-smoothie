@@ -5,7 +5,7 @@ var SmoothieComponent = React.createClass({
   getDefaultProps: function() {
     return {
       width: 800,
-      height: 200
+      height: 200,
     }
   },
   componentDidMount: function() {
