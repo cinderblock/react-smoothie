@@ -4,13 +4,13 @@ React wrapper for [Smoothie Chart](http://smoothiecharts.org/)
 
 ## Install
 
-```
+```bash
 npm install react-smoothie --save
 ```
 
 ## Usage
 
-```
+```nodejs
 var SmoothieComponent = require('react-smoothie');
 
 var TestComponent = React.createClass({
@@ -39,7 +39,11 @@ var TestComponent = React.createClass({
 
 ## Props
 
-`SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor like this: `new smoothie.SmoothieChart(this.props);`
+`SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor.
+
+```nodejs
+<SmoothieComponent ref='chart' width={1000} height={300} interpolation='step' />;
+```
 
 Two extra props can be passed to control the size of the `<canvas>` used:
 
@@ -55,9 +59,14 @@ Two extra props can be passed to control the size of the `<canvas>` used:
 
 The `TimeSeries` object from _Smoothie Chart_ is exposed via the `addTimeSeries()` function.
 
-`.addTimeSeries({/* TimeSeries opts */},{/* Chart.addTimeSeries opts */})`
+The first argument of `addTimeSeries()` gets passed to the `TimeSeries` constructor.
+The second argument of `addTimeSeries()` gets passed as the second argument of `SmoothieChart.addTimeSeries()`.
 
-The two arguments of addTimeSeries() get passed to the `TimeSeries` constructor and as the second argument to `SmoothieChart.addTimeSeries()` individually.
+```nodejs
+var ts = this.refs.chart.addTimeSeries({/* TimeSeries opts */},{/* Chart.addTimeSeries opts */})
+
+ts.append(new Date().getTime(), Math.random());
+```
 
 ## Test
 
