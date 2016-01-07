@@ -45,15 +45,25 @@ var TestComponent = React.createClass({
 <SmoothieComponent ref='chart' width={1000} height={300} interpolation='step' />;
 ```
 
-Two extra props can be passed to control the size of the `<canvas>` used:
+Three extra props can be used:
 
 ### `width`
+
+Control the width of the `<canvas>` used.
 
 *default: `800`*
 
 ### `height`
 
+Control the height of the `<canvas>` used.
+
 *default: `200`*
+
+### `streamDelay`
+
+*default: `0`*
+
+Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
 
 ## TimeSeries
 
