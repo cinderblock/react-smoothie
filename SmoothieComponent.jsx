@@ -6,6 +6,7 @@ var SmoothieComponent = React.createClass({
     return {
       width: 800,
       height: 200,
+      streamDelay: 0,
     }
   },
   componentDidMount: function() {
@@ -13,7 +14,7 @@ var SmoothieComponent = React.createClass({
       this.smoothie = new smoothie.SmoothieChart(this.props);
 
     if (this.canvas)
-      this.smoothie.streamTo(this.canvas);
+      this.smoothie.streamTo(this.canvas, this.props.streamDelay);
   },
   componentDidUpdate: function(prevProps, prevState) {
     // console.log(this.props.width);
