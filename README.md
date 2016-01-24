@@ -61,7 +61,7 @@ Control the height of the `<canvas>` used.
 
 ### `streamDelay`
 
-*default: `0`*
+*default: `0` (ms)*
 
 Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
 
