@@ -9,7 +9,7 @@
   },
   "scripts": {
     "postversion": "npm publish",
-    "prepublish": "gulp dist",
+    "prepublishOnly": "gulp dist",
     "postpublish": "git push origin master --tags"
   },
   "keywords": [
