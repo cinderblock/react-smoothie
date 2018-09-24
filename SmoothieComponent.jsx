@@ -22,11 +22,15 @@ class SmoothieComponent extends React.Component {
   }
 
   render() {
-    const style = {};
+    let style = {};
+
     if (this.props.responsive === true) {
       style.width = '100%';
       style.height = this.props.height;
     }
+
+    style = this.props.style || style;
+
     return (
       <canvas
         style={style}
