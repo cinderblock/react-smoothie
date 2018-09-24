@@ -29,6 +29,7 @@
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "dependencies": {
     "react": "^0.14.2",
+    "react-autobind": "^1.0.6",
     "smoothie": "^1.35.0"
   },
   "devDependencies": {

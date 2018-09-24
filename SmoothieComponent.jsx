@@ -1,20 +1,22 @@
-var smoothie = require('smoothie');
-var React = require('react');
+import React from 'react';
+import reactAutoBind from 'react-autobind';
 
-var SmoothieComponent = React.createClass({
-  getDefaultProps: function() {
-    return {
-      width: 800,
-      height: 200,
-      streamDelay: 0,
-    };
-  },
-  componentDidMount: function() {
+const smoothie = require('smoothie');
+
+class SmoothieComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    reactAutoBind(this);
+  }
+
+  componentDidMount() {
     if (!this.smoothie) this.smoothie = new smoothie.SmoothieChart(this.props);
 
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
-  },
-  componentDidUpdate: function(prevProps, prevState) {
+  }
+
+  componentDidUpdate(prevProps, prevState) {
     // console.log(this.props.width);
     // console.log(prevProps.width);
     // console.log(this.props.height);
@@ -25,19 +27,28 @@ var SmoothieComponent = React.createClass({
     } else {
       // console.log('Props changed, size the same');
     }
-  },
-  componentWillUnmount: function() {
+  }
+
+  componentWillUnmount() {
     this.smoothie.stop();
     this.smoothie = undefined;
-  },
-  render: function() {
+  }
+
+  render() {
     return <canvas width={this.props.width} height={this.props.height} ref={canv => (this.canvas = canv)} />;
-  },
-  addTimeSeries: function(tsOpts, addOpts) {
+  }
+
+  addTimeSeries(tsOpts, addOpts) {
     var ts = new smoothie.TimeSeries(tsOpts);
     this.smoothie.addTimeSeries(ts, addOpts);
     return ts;
-  },
-});
+  }
+}
+
+SmoothieComponent.defaultProps = {
+  width: 800,
+  height: 200,
+  streamDelay: 0,
+};
 
 module.exports = SmoothieComponent;
