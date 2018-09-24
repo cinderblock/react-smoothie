@@ -25,6 +25,7 @@ class SmoothieComponent extends React.Component {
     const style = {};
     if (this.props.responsive === true) {
       style.width = '100%';
+      style.height = this.props.height;
     }
     return (
       <canvas
