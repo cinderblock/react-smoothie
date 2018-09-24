@@ -42,6 +42,10 @@ class SmoothieComponent extends React.Component {
   }
 
   addTimeSeries(tsOpts, addOpts) {
+    if (addOpts === undefined) {
+      addOpts = tsOpts;
+      tsOpts = undefined;
+    }
     var ts = new smoothie.TimeSeries(tsOpts);
     this.smoothie.addTimeSeries(ts, addOpts);
     return ts;
