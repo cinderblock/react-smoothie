@@ -23,13 +23,13 @@ class SmoothieComponent extends React.Component {
 
   render() {
     const style = {};
-    if (this.props.responsive) {
+    if (this.props.responsive === true) {
       style.width = '100%';
     }
     return (
       <canvas
         style={style}
-        width={this.props.responsive ? undefined : this.props.width}
+        width={this.props.responsive === true ? undefined : this.props.width}
         height={this.props.height}
         ref={canv => (this.canvas = canv)}
       />
