@@ -8,6 +8,7 @@
     "url": "git+https://github.com/cinderblock/react-smoothie.git"
   },
   "scripts": {
+    "test": "gulp test && opn test/index.html",
     "postversion": "npm publish",
     "prepublishOnly": "gulp dist",
     "postpublish": "git push origin master --tags"
@@ -39,6 +40,7 @@
     "babel-preset-react": "^6.1.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
+    "opn-cli": "^3.1.0",
     "prettier": "^1.14.3",
     "react-dom": "^0.14.2",
     "webpack-stream": "^2.1.1"
