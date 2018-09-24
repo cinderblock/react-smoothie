@@ -58,4 +58,4 @@ SmoothieComponent.defaultProps = {
   streamDelay: 0,
 };
 
-module.exports = SmoothieComponent;
+export default SmoothieComponent;
