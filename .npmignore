@@ -1,4 +1,7 @@
 /gulpfile.js
 /test.js
 /test/
-/.npmignore
+
+.prettierrc
+.editorconfig
+.vscode

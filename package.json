@@ -38,6 +38,7 @@
     "babel-preset-react": "^6.1.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
+    "prettier": "^1.14.3",
     "react-dom": "^0.14.2",
     "webpack-stream": "^2.1.1"
   }
