@@ -16,19 +16,6 @@ class SmoothieComponent extends React.Component {
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // console.log(this.props.width);
-    // console.log(prevProps.width);
-    // console.log(this.props.height);
-    // console.log(prevProps.height);
-    if (this.props.width != prevProps.width || this.props.height != prevProps.height) {
-      console.log('Size changed');
-      // this.smoothie.resize();
-    } else {
-      // console.log('Props changed, size the same');
-    }
-  }
-
   componentWillUnmount() {
     this.smoothie.stop();
     this.smoothie = undefined;
