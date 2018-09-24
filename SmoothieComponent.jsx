@@ -22,7 +22,18 @@ class SmoothieComponent extends React.Component {
   }
 
   render() {
-    return <canvas width={this.props.width} height={this.props.height} ref={canv => (this.canvas = canv)} />;
+    const style = {};
+    if (this.props.responsive) {
+      style.width = '100%';
+    }
+    return (
+      <canvas
+        style={style}
+        width={this.props.responsive ? undefined : this.props.width}
+        height={this.props.height}
+        ref={canv => (this.canvas = canv)}
+      />
+    );
   }
 
   addTimeSeries(tsOpts, addOpts) {

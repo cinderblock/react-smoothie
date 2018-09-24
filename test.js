@@ -4,7 +4,7 @@ var SmoothieComponent = require('./SmoothieComponent.jsx');
 
 var TestComponent = React.createClass({
   render: function() {
-    return <SmoothieComponent ref="chart" />;
+    return <SmoothieComponent ref="chart" responsive />;
   },
 
   componentDidMount: function() {
