@@ -4,12 +4,18 @@ var SmoothieComponent = require('./SmoothieComponent.jsx');
 
 var TestComponent = React.createClass({
   render: function() {
-    return <SmoothieComponent ref="chart"/>;
+    return <SmoothieComponent ref="chart" />;
   },
 
   componentDidMount: function() {
-    var ts1 = this.refs.chart.addTimeSeries({},{ strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
-    var ts2 = this.refs.chart.addTimeSeries({},{ strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+    var ts1 = this.refs.chart.addTimeSeries(
+      {},
+      { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 }
+    );
+    var ts2 = this.refs.chart.addTimeSeries(
+      {},
+      { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 }
+    );
 
     this.dataGenerator = setInterval(function() {
       var time = new Date().getTime();
@@ -20,7 +26,7 @@ var TestComponent = React.createClass({
 
   componentWillUnmount: function() {
     clearInterval(this.dataGenerator);
-  }
+  },
 });
 
 ReactDOM.render(<TestComponent />, document.getElementById('react-root'));
