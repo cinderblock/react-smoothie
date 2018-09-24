@@ -7,14 +7,12 @@ var SmoothieComponent = React.createClass({
       width: 800,
       height: 200,
       streamDelay: 0,
-    }
+    };
   },
   componentDidMount: function() {
-    if (!this.smoothie)
-      this.smoothie = new smoothie.SmoothieChart(this.props);
+    if (!this.smoothie) this.smoothie = new smoothie.SmoothieChart(this.props);
 
-    if (this.canvas)
-      this.smoothie.streamTo(this.canvas, this.props.streamDelay);
+    if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
   },
   componentDidUpdate: function(prevProps, prevState) {
     // console.log(this.props.width);
@@ -33,13 +31,13 @@ var SmoothieComponent = React.createClass({
     this.smoothie = undefined;
   },
   render: function() {
-    return <canvas width={this.props.width} height={this.props.height} ref={canv => this.canvas = canv} />
+    return <canvas width={this.props.width} height={this.props.height} ref={canv => (this.canvas = canv)} />;
   },
   addTimeSeries: function(tsOpts, addOpts) {
     var ts = new smoothie.TimeSeries(tsOpts);
     this.smoothie.addTimeSeries(ts, addOpts);
     return ts;
-  }
+  },
 });
 
 module.exports = SmoothieComponent;
