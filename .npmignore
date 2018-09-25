@@ -5,3 +5,5 @@
 .prettierrc
 .editorconfig
 .vscode
+
+webpack.config.js
