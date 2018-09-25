@@ -51,17 +51,17 @@ Three extra props can be used:
 
 Control the width of the `<canvas>` used.
 
-*default: `800`*
+_default: `800`_
 
 ### `height`
 
 Control the height of the `<canvas>` used.
 
-*default: `200`*
+_default: `200`_
 
 ### `streamDelay`
 
-*default: `0` (ms)*
+_default: `0` (ms)_
 
 Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
 
@@ -80,6 +80,6 @@ ts.append(new Date().getTime(), Math.random());
 
 ## Test
 
- - Run `gulp test` to generate a browser ready `test/test.js` from `test.js` that `test/index.html` can load.
- - Open `test/index.html` in your favorite browser
- - Watch random data fly!
+- Run `gulp test` to generate a browser ready `test/test.js` from `test.js` that `test/index.html` can load.
+- Open `test/index.html` in your favorite browser
+- Watch random data fly!
