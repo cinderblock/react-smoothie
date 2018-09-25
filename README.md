@@ -34,6 +34,10 @@ var TestComponent = React.createClass({
 
     this.dataGenerator = setInterval(function() {
       var time = new Date().getTime();
+
+      // Generate times slightly in the future
+      time += 1000;
+
       ts1.append(time, Math.random());
       ts2.append(time, Math.random());
     }, 500);
