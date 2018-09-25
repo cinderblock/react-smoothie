@@ -45,25 +45,33 @@ var TestComponent = React.createClass({
 <SmoothieComponent ref='chart' width={1000} height={300} interpolation='step' />;
 ```
 
+### Extra
+
 Three extra props can be used:
 
-### `width`
+#### `width`
 
 Control the width of the `<canvas>` used.
 
 _default: `800`_
 
-### `height`
+#### `height`
 
 Control the height of the `<canvas>` used.
 
 _default: `200`_
 
-### `streamDelay`
+#### `streamDelay`
 
 _default: `0` (ms)_
 
 Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
+
+### Responsive charts
+
+Experimental support for responsive charts was added in 0.3.0.
+Simply set the `responsive` prop to `true` and canvas will use the full width of the parent container.
+Height is still a controlled prop.
 
 ## TimeSeries
 
