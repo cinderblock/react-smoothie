@@ -1,9 +1,7 @@
 /gulpfile.js
 /test.js
-/test/
+/webpack.config.js
 
 .prettierrc
 .editorconfig
 .vscode
-
-webpack.config.js
