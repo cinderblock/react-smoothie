@@ -77,11 +77,11 @@ Height is still a controlled prop.
 
 The `TimeSeries` object from _Smoothie Chart_ is exposed via the `addTimeSeries()` function.
 
-The first argument of `addTimeSeries()` gets passed to the `TimeSeries` constructor.
-The second argument of `addTimeSeries()` gets passed as the second argument of `SmoothieChart.addTimeSeries()`.
+The optional first argument of `addTimeSeries()` gets passed as the options to the `TimeSeries` constructor.
+The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
 
 ```nodejs
-var ts = this.refs.chart.addTimeSeries({/* TimeSeries opts */},{/* Chart.addTimeSeries opts */})
+var ts = this.refs.chart.addTimeSeries({/* Optional TimeSeries opts */},{/* Chart.addTimeSeries opts */})
 
 ts.append(new Date().getTime(), Math.random());
 ```
