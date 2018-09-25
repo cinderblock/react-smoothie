@@ -11,7 +11,7 @@ npm install react-smoothie --save
 ## Usage
 
 ```nodejs
-var SmoothieComponent = require('react-smoothie');
+var SmoothieComponent = require('react-smoothie').default;
 
 var TestComponent = React.createClass({
   // ...
