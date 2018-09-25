@@ -88,6 +88,4 @@ ts.append(new Date().getTime(), Math.random());
 
 ## Test
 
-- Run `gulp test` to generate a browser ready `test/test.js` from `test.js` that `test/index.html` can load.
-- Open `test/index.html` in your favorite browser
-- Watch random data fly!
+Run `yarn dev` to start the Webpack Dev Server and open the page on your browser.
