@@ -8,7 +8,6 @@
     "url": "git+https://github.com/cinderblock/react-smoothie.git"
   },
   "scripts": {
-    "test": "gulp test && opn test/index.html",
     "postversion": "npm publish",
     "prepublishOnly": "gulp dist",
     "postpublish": "git push origin master --tags"
@@ -34,15 +33,12 @@
     "smoothie": "^1.35.0"
   },
   "devDependencies": {
-    "babel-core": "^6.1.2",
-    "babel-loader": "^6.1.0",
-    "babel-preset-es2015": "^6.1.2",
-    "babel-preset-react": "^6.1.2",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "gulp": "^3.9.0",
-    "gulp-babel": "^6.1.0",
-    "opn-cli": "^3.1.0",
+    "gulp-babel": "^8.0.0",
     "prettier": "^1.14.3",
-    "react-dom": "^0.14.2",
-    "webpack-stream": "^2.1.1"
+    "react-dom": "^0.14.2"
   }
 }
