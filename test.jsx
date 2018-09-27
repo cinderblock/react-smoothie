@@ -3,13 +3,23 @@ import ReactDOM from 'react-dom';
 
 import SmoothieComponent, { TimeSeries } from './SmoothieComponent.jsx';
 
+const TS = new TimeSeries();
 const TS2 = new TimeSeries();
+
 class TestComponent extends React.Component {
   render() {
     return (
       <SmoothieComponent
         ref="chart"
         responsive
+        series={[
+          {
+            ts: TS,
+            strokeStyle: { b: 255 },
+            fillStyle: { b: 255 },
+            lineWidth: 4,
+          },
+        ]}
       />
     );
   }
@@ -35,6 +45,7 @@ class TestComponent extends React.Component {
 
       ts1.append(time, Math.random());
       TS2.append(time, Math.random());
+      TS.append(time, Math.random());
     }, 500);
   }
 
