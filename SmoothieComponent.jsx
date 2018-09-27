@@ -82,7 +82,7 @@ class SmoothieComponent extends React.Component {
 
     let ts = tsOpts instanceof TimeSeries ? tsOpts : new TimeSeries(tsOpts);
 
-    this.smoothie.addTimeSeries(ts, addOpts);
+    this.smoothie.addTimeSeries(ts, seriesOptsParser(addOpts));
     return ts;
   }
 }
