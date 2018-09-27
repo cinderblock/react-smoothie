@@ -3,7 +3,7 @@ import reactAutoBind from 'react-autobind';
 
 import { SmoothieChart, TimeSeries } from 'smoothie';
 
-export default class SmoothieComponent extends React.Component {
+class SmoothieComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -46,7 +46,9 @@ export default class SmoothieComponent extends React.Component {
       addOpts = tsOpts;
       tsOpts = undefined;
     }
-    var ts = new TimeSeries(tsOpts);
+
+    let ts = tsOpts instanceof TimeSeries ? tsOpts : new TimeSeries(tsOpts);
+
     this.smoothie.addTimeSeries(ts, addOpts);
     return ts;
   }
@@ -57,3 +59,5 @@ SmoothieComponent.defaultProps = {
   height: 200,
   streamDelay: 0,
 };
+
+export { SmoothieComponent as default, TimeSeries };
