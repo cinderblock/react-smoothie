@@ -41,7 +41,7 @@ class TestComponent extends React.Component {
       var time = new Date().getTime();
 
       // Generate times slightly in the future
-      time += 1000;
+      // time += 1000;
 
       ts1.append(time, Math.random());
       TS2.append(time, Math.random());
