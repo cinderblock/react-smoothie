@@ -10,7 +10,11 @@ module.exports = {
     publicPath: '/',
   },
   mode: 'development',
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'React Smoothie Chart Test',
+    }),
+  ],
   devServer: {
     overlay: {
       warnings: true,
