@@ -1,7 +1,7 @@
 import React from 'react';
 import reactAutoBind from 'react-autobind';
 
-const smoothie = require('smoothie');
+import { SmoothieChart, TimeSeries } from 'smoothie';
 
 export default class SmoothieComponent extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class SmoothieComponent extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.smoothie) this.smoothie = new smoothie.SmoothieChart(this.props);
+    if (!this.smoothie) this.smoothie = new SmoothieChart(this.props);
 
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
   }
@@ -46,7 +46,7 @@ export default class SmoothieComponent extends React.Component {
       addOpts = tsOpts;
       tsOpts = undefined;
     }
-    var ts = new smoothie.TimeSeries(tsOpts);
+    var ts = new TimeSeries(tsOpts);
     this.smoothie.addTimeSeries(ts, addOpts);
     return ts;
   }
