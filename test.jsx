@@ -32,8 +32,8 @@ class TestComponent extends React.Component {
     });
 
     this.refs.chart.addTimeSeries(TS2, {
-      strokeStyle: 'rgba(255, 0, 0, 1)',
-      fillStyle: 'rgba(255, 0, 0, 0.2)',
+      strokeStyle: { r: 255 },
+      fillStyle: { r: 255, a: 0.5 },
       lineWidth: 4,
     });
 
