@@ -3,6 +3,31 @@ import reactAutoBind from 'react-autobind';
 
 import { SmoothieChart, TimeSeries } from 'smoothie';
 
+function seriesOptsParser(opts) {
+  const ret = {};
+  Object.entries(opts).forEach(([name, val]) => {
+    if (name == 'ts') return;
+
+    if (typeof val == 'string' || typeof val == 'number') {
+      ret[name] = val;
+      return;
+    }
+
+    let { r, g, b, a } = val;
+
+    if (r === undefined) r = 0;
+    if (g === undefined) g = 0;
+    if (b === undefined) b = 0;
+
+    if (a === undefined) {
+      a = name == 'strokeStyle' ? 1 : r + g + b ? 0.2 : 0;
+    }
+
+    ret[name] = `rgba(${r}, ${g}, ${b}, ${a})`;
+  });
+  return ret;
+}
+
 class SmoothieComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -14,6 +39,14 @@ class SmoothieComponent extends React.Component {
     if (!this.smoothie) this.smoothie = new SmoothieChart(this.props);
 
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
+
+    this.props.series.forEach(series => {
+      if (!(series.ts instanceof TimeSeries)) {
+        throw Error('Invalid type passed to series option');
+      }
+
+      this.smoothie.addTimeSeries(series.ts, seriesOptsParser(series));
+    });
   }
 
   componentWillUnmount() {
