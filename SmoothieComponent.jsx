@@ -3,7 +3,7 @@ import reactAutoBind from 'react-autobind';
 
 const smoothie = require('smoothie');
 
-class SmoothieComponent extends React.Component {
+export default class SmoothieComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -57,5 +57,3 @@ SmoothieComponent.defaultProps = {
   height: 200,
   streamDelay: 0,
 };
-
-export default SmoothieComponent;
