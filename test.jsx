@@ -1,13 +1,19 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var SmoothieComponent = require('./SmoothieComponent.jsx').default;
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var TestComponent = React.createClass({
-  render: function() {
-    return <SmoothieComponent ref="chart" responsive />;
-  },
+import SmoothieComponent, { TimeSeries } from './SmoothieComponent.jsx';
 
-  componentDidMount: function() {
+class TestComponent extends React.Component {
+  render() {
+    return (
+      <SmoothieComponent
+        ref="chart"
+        responsive
+      />
+    );
+  }
+
+  componentDidMount() {
     var ts1 = this.refs.chart.addTimeSeries({
       strokeStyle: 'rgba(0, 255, 0, 1)',
       fillStyle: 'rgba(0, 255, 0, 0.2)',
@@ -28,11 +34,11 @@ var TestComponent = React.createClass({
       ts1.append(time, Math.random());
       ts2.append(time, Math.random());
     }, 500);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     clearInterval(this.dataGenerator);
-  },
-});
+  }
+}
 
 ReactDOM.render(<TestComponent />, document.body.appendChild(document.createElement('div')));
