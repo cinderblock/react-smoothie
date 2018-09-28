@@ -10,42 +10,92 @@ npm install react-smoothie --save
 
 ## Usage
 
-```jsx
+There are 2 main ways to populate data.
+
+- Original `ref` based `addTimeSeries()`
+- New _(added in `0.4.0`)_ props based with reference to TimeSeries
+
+### Import / Require
+
+Both import or require work
+
+```javascript
 const { default: SmoothieComponent, TimeSeries } = require('react-smoothie');
 import SmoothieComponent, { TimeSeries } from 'react-smoothie';
+```
+
+### New prop based API
+
+```jsx
+const ts1 = new TimeSeries({});
+const ts2 = new TimeSeries({
+  resetBounds: true,
+  resetBoundsInterval: 3000,
+});
+
+setInterval(function() {
+  var time = new Date().getTime();
+
+  ts1.append(time, Math.random());
+  ts2.append(time, Math.random());
+}, 500);
 
 var TestComponent = React.createClass({
-  // ...
-
   render: function() {
     return (
       <SmoothieComponent
-        ref="chart"
         responsive
         height={300}
         series={[
           {
-            data: TS,
-            strokeStyle: { b: 255 },
-            fillStyle: { b: 255 },
+            data: ts1,
+            strokeStyle: { g: 255 },
+            fillStyle: { g: 255 },
+            lineWidth: 4,
+          },
+          {
+            data: ts2,
+            strokeStyle: { r: 255 },
+            fillStyle: { r: 255 },
             lineWidth: 4,
           },
         ]}
       />
     );
   },
+});
+```
+
+### Old reference based API
+
+```jsx
+var TestComponent = React.createClass({
+  render: function() {
+    return <SmoothieComponent ref="chart" responsive height={300} />;
+  },
 
   componentDidMount: function() {
-    var ts1 = this.refs.chart.addTimeSeries({
+    // Initialize TimeSeries yourself
+    var ts1 = new TimeSeries({});
+
+    this.refs.chart.addTimeSeries(ts1, {
       strokeStyle: 'rgba(0, 255, 0, 1)',
       fillStyle: 'rgba(0, 255, 0, 0.2)',
       lineWidth: 4,
     });
-    var ts2 = this.refs.chart.addTimeSeries({
-      strokeStyle: 'rgba(255, 0, 0, 1)',
-      fillStyle: 'rgba(255, 0, 0, 0.2)',
-      lineWidth: 4,
-    });
+
+    // Or let addTimeSeries create a new instance of TimeSeries for us
+    var ts2 = this.refs.chart.addTimeSeries(
+      {
+        resetBounds: true,
+        resetBoundsInterval: 3000,
+      },
+      {
+        strokeStyle: { r: 255 },
+        fillStyle: { r: 255 },
+        lineWidth: 4,
+      }
+    );
 
     this.dataGenerator = setInterval(function() {
       var time = new Date().getTime();
@@ -105,6 +155,8 @@ The `TimeSeries` object from _Smoothie Chart_ is exposed via the `addTimeSeries(
 
 The optional first argument of `addTimeSeries()` gets passed as the options to the `TimeSeries` constructor.
 The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
+
+As of `0.4.0`, `TimeSeries` is also exported directly and can be passed as an argument to `addTimeSeries()`.
 
 ```jsx
 var ts = this.refs.chart.addTimeSeries(
