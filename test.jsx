@@ -15,8 +15,7 @@ class TestComponent extends React.Component {
         series={[
           {
             data: TS,
-            strokeStyle: { b: 255 },
-            fillStyle: { b: 255 },
+            b: 255,
             lineWidth: 4,
           },
         ]}
