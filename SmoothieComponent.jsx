@@ -65,13 +65,15 @@ class SmoothieComponent extends React.Component {
 
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
 
-    this.props.series.forEach(series => {
-      if (!(series.data instanceof TimeSeries)) {
-        throw Error('Invalid type passed to series option');
-      }
+    if (this.props.series) {
+      this.props.series.forEach(series => {
+        if (!(series.data instanceof TimeSeries)) {
+          throw Error('Invalid type passed to series option');
+        }
 
-      this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
-    });
+        this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
+      });
+    }
   }
 
   componentWillUnmount() {
