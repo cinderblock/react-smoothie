@@ -13,9 +13,8 @@ npm install react-smoothie --save
 See [`test.jsx`](test.jsx) for a standalone example.
 
 ```nodejs
-const {default: SmoothieComponent, TimeSeries} = require('react-smoothie');
-import SmoothieComponent, {TimeSeries} from 'react-smoothie';
-
+const { default: SmoothieComponent, TimeSeries } = require('react-smoothie');
+import SmoothieComponent, { TimeSeries } from 'react-smoothie';
 
 var TestComponent = React.createClass({
   // ...
@@ -49,7 +48,7 @@ var TestComponent = React.createClass({
 
   componentWillUnmount: function() {
     clearInterval(this.dataGenerator);
-  }
+  },
 });
 ```
 
@@ -58,7 +57,7 @@ var TestComponent = React.createClass({
 `SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor.
 
 ```nodejs
-<SmoothieComponent ref='chart' width={1000} height={300} interpolation='step' />;
+<SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
 ```
 
 ### Extra
@@ -97,7 +96,14 @@ The optional first argument of `addTimeSeries()` gets passed as the options to t
 The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
 
 ```nodejs
-var ts = this.refs.chart.addTimeSeries({/* Optional TimeSeries opts */},{/* Chart.addTimeSeries opts */})
+var ts = this.refs.chart.addTimeSeries(
+  {
+    /* Optional TimeSeries opts */
+  },
+  {
+    /* Chart.addTimeSeries opts */
+  }
+);
 
 ts.append(new Date().getTime(), Math.random());
 ```
