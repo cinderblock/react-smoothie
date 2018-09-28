@@ -12,7 +12,7 @@ npm install react-smoothie --save
 
 See [`test.jsx`](test.jsx) for a standalone example.
 
-```nodejs
+```jsx
 const { default: SmoothieComponent, TimeSeries } = require('react-smoothie');
 import SmoothieComponent, { TimeSeries } from 'react-smoothie';
 
@@ -56,7 +56,7 @@ var TestComponent = React.createClass({
 
 `SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor.
 
-```nodejs
+```jsx
 <SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
 ```
 
@@ -95,7 +95,7 @@ The `TimeSeries` object from _Smoothie Chart_ is exposed via the `addTimeSeries(
 The optional first argument of `addTimeSeries()` gets passed as the options to the `TimeSeries` constructor.
 The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
 
-```nodejs
+```jsx
 var ts = this.refs.chart.addTimeSeries(
   {
     /* Optional TimeSeries opts */
