@@ -10,6 +10,8 @@ npm install react-smoothie --save
 
 ## Usage
 
+See [`test.jsx`](test.jsx) for a standalone example.
+
 ```nodejs
 const {default: SmoothieComponent, TimeSeries} = require('react-smoothie');
 import SmoothieComponent, {TimeSeries} from 'react-smoothie';
