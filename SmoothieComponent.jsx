@@ -6,7 +6,7 @@ import { SmoothieChart, TimeSeries } from 'smoothie';
 function seriesOptsParser(opts) {
   const ret = {};
   Object.entries(opts).forEach(([name, val]) => {
-    if (name == 'ts') return;
+    if (name == 'data') return;
 
     if (typeof val == 'string' || typeof val == 'number') {
       ret[name] = val;
@@ -41,11 +41,11 @@ class SmoothieComponent extends React.Component {
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
 
     this.props.series.forEach(series => {
-      if (!(series.ts instanceof TimeSeries)) {
+      if (!(series.data instanceof TimeSeries)) {
         throw Error('Invalid type passed to series option');
       }
 
-      this.smoothie.addTimeSeries(series.ts, seriesOptsParser(series));
+      this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
     });
   }
 

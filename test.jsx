@@ -14,7 +14,7 @@ class TestComponent extends React.Component {
         responsive
         series={[
           {
-            ts: TS,
+            data: TS,
             strokeStyle: { b: 255 },
             fillStyle: { b: 255 },
             lineWidth: 4,
