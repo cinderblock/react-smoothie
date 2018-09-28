@@ -20,7 +20,21 @@ var TestComponent = React.createClass({
   // ...
 
   render: function() {
-    return <SmoothieComponent ref="chart" width="1000" height="300" />;
+    return (
+      <SmoothieComponent
+        ref="chart"
+        responsive
+        height={300}
+        series={[
+          {
+            data: TS,
+            strokeStyle: { b: 255 },
+            fillStyle: { b: 255 },
+            lineWidth: 4,
+          },
+        ]}
+      />
+    );
   },
 
   componentDidMount: function() {
