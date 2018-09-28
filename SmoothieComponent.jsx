@@ -8,9 +8,13 @@ function seriesOptsParser(opts) {
   Object.entries(opts).forEach(([name, val]) => {
     if (name == 'data') return;
 
-    if (typeof val == 'string' || typeof val == 'number') {
-      ret[name] = val;
-      return;
+    switch (typeof val) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+        ret[name] = val;
+        return;
+      default:
     }
 
     let { r, g, b, a } = val;
