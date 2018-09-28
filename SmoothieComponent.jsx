@@ -5,8 +5,29 @@ import { SmoothieChart, TimeSeries } from 'smoothie';
 
 function seriesOptsParser(opts) {
   const ret = {};
+  let { r: R, g: G, b: B } = opts;
+
+  if (R === undefined) R = 0;
+  if (G === undefined) G = 0;
+  if (B === undefined) B = 0;
+
+  if (opts.fillStyle === undefined && R + G + B) {
+    opts.fillStyle = {};
+  }
+
+  if (opts.strokeStyle === undefined && R + G + B) {
+    opts.strokeStyle = {};
+  }
+
   Object.entries(opts).forEach(([name, val]) => {
-    if (name == 'data') return;
+    switch (name) {
+      case 'data':
+      case 'r':
+      case 'g':
+      case 'b':
+        return;
+      default:
+    }
 
     switch (typeof val) {
       case 'string':
@@ -19,9 +40,9 @@ function seriesOptsParser(opts) {
 
     let { r, g, b, a } = val;
 
-    if (r === undefined) r = 0;
-    if (g === undefined) g = 0;
-    if (b === undefined) b = 0;
+    if (r === undefined) r = R;
+    if (g === undefined) g = G;
+    if (b === undefined) b = B;
 
     if (a === undefined) {
       a = name == 'strokeStyle' ? 1 : r + g + b ? 0.2 : 0;
