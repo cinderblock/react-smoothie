@@ -12,6 +12,8 @@ npm install react-smoothie --save
 
 ```nodejs
 const {default: SmoothieComponent, TimeSeries} = require('react-smoothie');
+import SmoothieComponent, {TimeSeries} from 'react-smoothie';
+
 
 var TestComponent = React.createClass({
   // ...
