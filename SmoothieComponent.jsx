@@ -77,61 +77,55 @@ class SmoothieComponent extends React.Component {
     super(props);
     this.state = { tooltip: {} };
     reactAutoBind(this);
-  }
 
-  componentDidMount() {
-    if (!this.smoothie) {
-      let opts = Object.assign({}, this.props);
+    let opts = Object.assign({}, props);
 
-      // SmoothieChart's tooltip injects a div at the end of the page.
-      // This will not do. We shall make our own and intercept the data.
+    // SmoothieChart's tooltip injects a div at the end of the page.
+    // This will not do. We shall make our own and intercept the data.
 
-      let updateTooltip = o => {
-        this.setState(state => {
-          Object.assign(state.tooltip, o);
-          return state;
-        });
-      };
+    let updateTooltip = o => {
+      this.setState(state => {
+        Object.assign(state.tooltip, o);
+        return state;
+      });
+    };
 
-      opts.tooltipFormatter = (t, data) => {
-        if (!this.props.doNotSimplifyData) {
-          data = data.map(set => ({
-            index: set.index,
-            value: set.value,
-            series: { options: set.series.options },
-          }));
-        }
+    opts.tooltipFormatter = (t, data) => {
+      if (!props.doNotSimplifyData) {
+        data = data.map(set => ({
+          index: set.index,
+          value: set.value,
+          series: { options: set.series.options },
+        }));
+      }
 
-        updateTooltip({
-          time: t,
-          data,
-        });
-      };
+      updateTooltip({
+        time: t,
+        data,
+      });
+    };
 
-      opts.tooltip = !!opts.tooltip;
+    opts.tooltip = !!opts.tooltip;
 
-      this.smoothie = new SmoothieChart(opts);
+    this.smoothie = new SmoothieChart(opts);
 
-      // Intercept the set data
-      this.smoothie.tooltipEl = {
-        style: {
-          set display(v) {
-            updateTooltip({ display: v == 'block' });
-          },
-          set top(v) {
-            updateTooltip({ top: Number(v.match(/^(\d+)px$/)[1]) });
-          },
-          set left(v) {
-            updateTooltip({ left: Number(v.match(/^(\d+)px$/)[1]) });
-          },
+    // Intercept the set data
+    this.smoothie.tooltipEl = {
+      style: {
+        set display(v) {
+          updateTooltip({ display: v == 'block' });
         },
-      };
-    }
+        set top(v) {
+          updateTooltip({ top: Number(v.match(/^(\d+)px$/)[1]) });
+        },
+        set left(v) {
+          updateTooltip({ left: Number(v.match(/^(\d+)px$/)[1]) });
+        },
+      },
+    };
 
-    if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
-
-    if (this.props.series) {
-      this.props.series.forEach(series => {
+    if (props.series) {
+      props.series.forEach(series => {
         if (!(series.data instanceof TimeSeries)) {
           throw Error('Invalid type passed to series option');
         }
@@ -143,7 +137,6 @@ class SmoothieComponent extends React.Component {
 
   componentWillUnmount() {
     this.smoothie.stop();
-    this.smoothie = undefined;
   }
 
   render() {
@@ -172,22 +165,29 @@ class SmoothieComponent extends React.Component {
       Tooltip = DefaultTooltip;
     }
 
+    let canvas = (
+      <canvas
+        className={this.props.className}
+        style={style}
+        width={this.props.responsive === true ? undefined : this.props.width}
+        height={this.props.height}
+        ref={canv => canv && this.smoothie.streamTo(canv, this.props.streamDelay)}
+      />
+    );
+
+    let tooltip;
+    if (Tooltip) {
+      tooltip = (
+        <div style={tooltipParentStyle} className={this.props.classNameTooltip}>
+          <Tooltip {...this.state.tooltip} />
+        </div>
+      );
+    }
+
     return (
       <>
-        <canvas
-          className={this.props.className}
-          style={style}
-          width={this.props.responsive === true ? undefined : this.props.width}
-          height={this.props.height}
-          ref={canv => (this.canvas = canv)}
-        />
-        {this.props.tooltip ? (
-          <div style={tooltipParentStyle} className={this.props.classNameTooltip}>
-            <Tooltip {...this.state.tooltip} />
-          </div>
-        ) : (
-          <></>
-        )}
+        {canvas}
+        {tooltip}
       </>
     );
   }

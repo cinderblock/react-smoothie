@@ -11,68 +11,81 @@ const TS = new TimeSeries();
 const TS2 = new TimeSeries();
 
 class TestComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   render() {
     return (
-      <SmoothieComponent
-        ref="chart"
-        responsive
-        interpolation="step"
-        minValue={0}
-        maxValue={1}
-        tooltip={props => {
-          if (!props.display) return <div />;
+      <>
+        <span onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</span>
+        {this.state.toggle ? (
+          <SmoothieComponent
+            ref="chart"
+            responsive
+            interpolation="step"
+            minValue={0}
+            maxValue={1}
+            tooltip={props => {
+              if (!props.display) return <div />;
 
-          return (
-            <div
-              style={{
-                userSelect: 'none',
-                background: '#444',
-                padding: '1em',
-                marginLeft: '20px',
-                fontFamily: 'consolas',
-                color: 'white',
-                fontSize: '10px',
-                pointerEvents: 'none',
-              }}
-            >
-              <strong>{props.time}</strong>
-              {props.data ? (
-                <ul>
-                  {props.data.map((data, i) => (
-                    <li key={i} style={{ color: data.series.options.strokeStyle }}>
-                      {data.value}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div />
-              )}
-            </div>
-          );
-        }}
-        series={[
-          {
-            data: TS,
-            b: 255,
-            lineWidth: 4,
-          },
-        ]}
-      />
+              return (
+                <div
+                  style={{
+                    userSelect: 'none',
+                    background: '#444',
+                    padding: '1em',
+                    marginLeft: '20px',
+                    fontFamily: 'consolas',
+                    color: 'white',
+                    fontSize: '10px',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <strong>{props.time}</strong>
+                  {props.data ? (
+                    <ul>
+                      {props.data.map((data, i) => (
+                        <li key={i} style={{ color: data.series.options.strokeStyle }}>
+                          {data.value}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div />
+                  )}
+                </div>
+              );
+            }}
+            series={[
+              {
+                data: TS,
+                b: 255,
+                lineWidth: 4,
+              },
+            ]}
+          />
+        ) : (
+          <></>
+        )}
+      </>
     );
   }
 
   componentDidMount() {
-    var ts1 = this.refs.chart.addTimeSeries({
-      strokeStyle: 'rgba(0, 255, 0, 1)',
-      fillStyle: 'rgba(0, 255, 0, 0.2)',
-      lineWidth: 4,
-    });
+    // var ts1 = this.refs.chart.addTimeSeries({
+    //   strokeStyle: 'rgba(0, 255, 0, 1)',
+    //   fillStyle: 'rgba(0, 255, 0, 0.2)',
+    //   lineWidth: 4,
+    // });
 
-    this.refs.chart.addTimeSeries(TS2, {
-      strokeStyle: { r: 255 },
-      fillStyle: { r: 255, a: 0.5 },
-      lineWidth: 4,
-    });
+    // this.refs.chart.addTimeSeries(TS2, {
+    //   strokeStyle: { r: 255 },
+    //   fillStyle: { r: 255, a: 0.5 },
+    //   lineWidth: 4,
+    // });
 
     this.dataGenerator = setInterval(function() {
       var time = new Date().getTime();
@@ -80,7 +93,7 @@ class TestComponent extends React.Component {
       // Generate times slightly in the future
       // time += 1000;
 
-      ts1.append(time, Math.random());
+      // ts1.append(time, Math.random());
       TS2.append(time, Math.random());
       TS.append(time, Math.random());
     }, 500);
