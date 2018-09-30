@@ -119,7 +119,9 @@ var TestComponent = React.createClass({
 });
 ```
 
-See [`test.jsx`](test.jsx) for a standalone example.
+### More Examples
+
+See [`test.jsx`](test.jsx) for a relatively standalone example.
 
 ## Props
 
