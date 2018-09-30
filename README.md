@@ -4,6 +4,14 @@ React wrapper for [Smoothie Chart](http://smoothiecharts.org/)
 
 ## Install
 
+With Yarn:
+
+```bash
+yarn add react-smoothie
+```
+
+With NPM:
+
 ```bash
 npm install react-smoothie --save
 ```
