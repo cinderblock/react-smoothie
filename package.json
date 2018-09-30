@@ -38,11 +38,13 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.2",
+    "file-loader": "^2.0.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^8.0.0",
     "html-webpack-plugin": "^3.2.0",
     "prettier": "^1.14.3",
     "react-dom": "^16.5.2",
+    "react-markdown": "^3.6.0",
     "webpack": "^4.19.1",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.9"

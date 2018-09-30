@@ -32,6 +32,15 @@ module.exports = {
           presets: ['@babel/env', '@babel/react'],
         },
       },
+      {
+        test: /\.(md)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {},
+          },
+        ],
+      },
     ],
   },
 };

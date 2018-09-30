@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import ReactMarkdown from 'react-markdown';
+
+import README from './README.md';
+
 import SmoothieComponent, { TimeSeries } from './SmoothieComponent.jsx';
 
 const TS = new TimeSeries();
@@ -87,9 +91,27 @@ class TestComponent extends React.Component {
   }
 }
 
+class Readme extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { text: null };
+  }
+
+  componentWillMount() {
+    fetch(README)
+      .then(response => response.text())
+      .then(text => this.setState({ text }));
+  }
+  render() {
+    return <ReactMarkdown source={this.state.text} />;
+  }
+}
+
 ReactDOM.render(
   <>
     <TestComponent />
+    <Readme />
   </>,
   document.body.appendChild(document.createElement('div'))
 );
