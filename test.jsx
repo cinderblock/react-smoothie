@@ -24,7 +24,7 @@ class TestComponent extends React.Component {
                 userSelect: 'none',
                 background: '#444',
                 padding: '1em',
-                marginTop: '20px',
+                marginLeft: '20px',
                 fontFamily: 'consolas',
                 color: 'white',
                 fontSize: '10px',
