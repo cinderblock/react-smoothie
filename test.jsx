@@ -13,6 +13,8 @@ class TestComponent extends React.Component {
         ref="chart"
         responsive
         interpolation="step"
+        minValue={0}
+        maxValue={1}
         tooltip={props => {
           if (!props.display) return <div />;
 
