@@ -114,6 +114,7 @@ class SmoothieComponent extends React.Component {
 
       this.smoothie = new SmoothieChart(opts);
 
+      // Intercept the set data
       this.smoothie.tooltipEl = {
         style: {
           set display(v) {
