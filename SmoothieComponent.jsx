@@ -179,6 +179,7 @@ class SmoothieComponent extends React.Component {
     return (
       <>
         <canvas
+          className={this.props.className}
           style={style}
           width={this.props.responsive === true ? undefined : this.props.width}
           height={this.props.height}
