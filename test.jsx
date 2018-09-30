@@ -21,7 +21,7 @@ class TestComponent extends React.Component {
     return (
       <>
         <span onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</span>
-        {this.state.toggle ? (
+        {!this.state.toggle ? (
           <SmoothieComponent
             ref="chart"
             responsive
