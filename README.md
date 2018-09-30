@@ -121,9 +121,9 @@ See [`test.jsx`](test.jsx) for a standalone example.
 <SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
 ```
 
-### Extra
+### Extra props
 
-Three extra props can be used:
+There are some extra props that control other behaviors.
 
 #### `width`
 
