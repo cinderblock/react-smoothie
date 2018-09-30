@@ -12,6 +12,41 @@ class TestComponent extends React.Component {
       <SmoothieComponent
         ref="chart"
         responsive
+        tooltip={props => {
+          if (!props.display) return <div />;
+
+          return (
+            <div
+              style={{
+                pointerEvents: 'none',
+                userSelect: 'none',
+                position: 'absolute',
+                left: props.left + 10,
+                top: props.top - 10,
+                background: '#444',
+                padding: '1em',
+                marginTop: '20px',
+                fontFamily: 'consolas',
+                color: 'white',
+                fontSize: '10px',
+                pointerEvents: 'none',
+              }}
+            >
+              <strong>{props.time}</strong>
+              {props.data ? (
+                <ul>
+                  {props.data.map((data, i) => (
+                    <li key={i} style={{ color: data.series.options.strokeStyle }}>
+                      {data.value}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div />
+              )}
+            </div>
+          );
+        }}
         series={[
           {
             data: TS,
