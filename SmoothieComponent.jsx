@@ -89,6 +89,9 @@ class SmoothieComponent extends React.Component {
       style.height = this.props.height;
     }
 
+    // Prevent extra pixels in wrapping element
+    style.display = 'block';
+
     style = this.props.style || style;
 
     return (
