@@ -87,4 +87,9 @@ class TestComponent extends React.Component {
   }
 }
 
-ReactDOM.render(<TestComponent />, document.body.appendChild(document.createElement('div')));
+ReactDOM.render(
+  <>
+    <TestComponent />
+  </>,
+  document.body.appendChild(document.createElement('div'))
+);
