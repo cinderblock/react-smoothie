@@ -7,14 +7,7 @@ function DefaultTooltip(props) {
   if (!props.display) return <div />;
 
   return (
-    <div
-      style={{
-        userSelect: 'none',
-        position: 'absolute',
-        left: props.left + 10,
-        top: props.top - 10,
-      }}
-    >
+    <div style={{ userSelect: 'none' }}>
       <strong>{props.time}</strong>
       {props.data ? (
         <ul>
@@ -167,6 +160,13 @@ class SmoothieComponent extends React.Component {
 
     style = this.props.style || style;
 
+    let tooltipParentStyle = this.props.tooltipParentStyle || {
+      pointerEvents: 'none',
+      position: 'absolute',
+      left: this.state.tooltip.left,
+      top: this.state.tooltip.top,
+    };
+
     let Tooltip = this.props.tooltip;
 
     if (Tooltip === true) {
@@ -183,7 +183,7 @@ class SmoothieComponent extends React.Component {
           height={this.props.height}
           ref={canv => (this.canvas = canv)}
         />
-        <div style={{ pointerEvents: 'none' }}>
+        <div style={tooltipParentStyle}>
           <Tooltip {...this.state.tooltip} />
         </div>
       </>

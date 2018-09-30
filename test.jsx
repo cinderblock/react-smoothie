@@ -21,11 +21,7 @@ class TestComponent extends React.Component {
           return (
             <div
               style={{
-                pointerEvents: 'none',
                 userSelect: 'none',
-                position: 'absolute',
-                left: props.left + 10,
-                top: props.top - 10,
                 background: '#444',
                 padding: '1em',
                 marginTop: '20px',
