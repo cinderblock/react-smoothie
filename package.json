@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "dependencies": {
-    "react": "^0.14.2",
+    "react": "^16.5.2",
     "react-autobind": "^1.0.6",
     "smoothie": "^1.35.0"
   },
@@ -42,7 +42,7 @@
     "gulp-babel": "^8.0.0",
     "html-webpack-plugin": "^3.2.0",
     "prettier": "^1.14.3",
-    "react-dom": "^0.14.2",
+    "react-dom": "^16.5.2",
     "webpack": "^4.19.1",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.9"
