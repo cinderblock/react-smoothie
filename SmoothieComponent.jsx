@@ -107,10 +107,10 @@ class SmoothieComponent extends React.Component {
 
     opts.tooltip = !!opts.tooltip;
 
-    this.smoothie = new SmoothieChart(opts);
+    let smoothie = new SmoothieChart(opts);
 
     // Intercept the set data
-    this.smoothie.tooltipEl = {
+    smoothie.tooltipEl = {
       style: {
         set display(v) {
           updateTooltip({ display: v == 'block' });
@@ -130,9 +130,11 @@ class SmoothieComponent extends React.Component {
           throw Error('Invalid type passed to series option');
         }
 
-        this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
+        smoothie.addTimeSeries(series.data, seriesOptsParser(series));
       });
     }
+
+    this.smoothie = smoothie;
   }
 
   componentWillUnmount() {
