@@ -3,6 +3,34 @@ import reactAutoBind from 'react-autobind';
 
 import { SmoothieChart, TimeSeries } from 'smoothie';
 
+function DefaultTooltip(props) {
+  if (!props.display) return <div />;
+
+  return (
+    <div
+      style={{
+        userSelect: 'none',
+        position: 'absolute',
+        left: props.left + 10,
+        top: props.top - 10,
+      }}
+    >
+      <strong>{props.time}</strong>
+      {props.data ? (
+        <ul>
+          {props.data.map((data, i) => (
+            <li key={i}>{data.value}</li>
+          ))}
+        </ul>
+      ) : (
+        <div />
+      )}
+    </div>
+  );
+}
+
+const NoTooltip = () => <div />;
+
 function seriesOptsParser(opts) {
   const ret = {};
   let { r: R, g: G, b: B } = opts;
@@ -56,12 +84,57 @@ function seriesOptsParser(opts) {
 class SmoothieComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { tooltip: {} };
     reactAutoBind(this);
   }
 
   componentDidMount() {
-    if (!this.smoothie) this.smoothie = new SmoothieChart(this.props);
+    if (!this.smoothie) {
+      let opts = Object.assign({}, this.props);
+
+      // SmoothieChart's tooltip injects a div at the end of the page.
+      // This will not do. We shall make our own and intercept the data.
+
+      let updateTooltip = o => {
+        this.setState(state => {
+          Object.assign(state.tooltip, o);
+          return state;
+        });
+      };
+
+      opts.tooltipFormatter = (t, data) => {
+        if (!this.props.doNotSimplifyData) {
+          data = data.map(set => ({
+            index: set.index,
+            value: set.value,
+            series: { options: set.series.options },
+          }));
+        }
+
+        updateTooltip({
+          time: t,
+          data,
+        });
+      };
+
+      opts.tooltip = !!opts.tooltip;
+
+      this.smoothie = new SmoothieChart(opts);
+
+      this.smoothie.tooltipEl = {
+        style: {
+          set display(v) {
+            updateTooltip({ display: v == 'block' });
+          },
+          set top(v) {
+            updateTooltip({ top: Number(v.match(/^(\d+)px$/)[1]) });
+          },
+          set left(v) {
+            updateTooltip({ left: Number(v.match(/^(\d+)px$/)[1]) });
+          },
+        },
+      };
+    }
 
     if (this.canvas) this.smoothie.streamTo(this.canvas, this.props.streamDelay);
 
@@ -94,13 +167,26 @@ class SmoothieComponent extends React.Component {
 
     style = this.props.style || style;
 
+    let Tooltip = this.props.tooltip;
+
+    if (Tooltip === true) {
+      Tooltip = DefaultTooltip;
+    }
+
+    if (!Tooltip) Tooltip = NoTooltip;
+
     return (
-      <canvas
-        style={style}
-        width={this.props.responsive === true ? undefined : this.props.width}
-        height={this.props.height}
-        ref={canv => (this.canvas = canv)}
-      />
+      <>
+        <canvas
+          style={style}
+          width={this.props.responsive === true ? undefined : this.props.width}
+          height={this.props.height}
+          ref={canv => (this.canvas = canv)}
+        />
+        <div style={{ pointerEvents: 'none' }}>
+          <Tooltip {...this.state.tooltip} />
+        </div>
+      </>
     );
   }
 
@@ -123,4 +209,4 @@ SmoothieComponent.defaultProps = {
   streamDelay: 0,
 };
 
-export { SmoothieComponent as default, TimeSeries };
+export { SmoothieComponent as default, TimeSeries, DefaultTooltip };
