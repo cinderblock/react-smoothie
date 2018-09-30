@@ -182,7 +182,7 @@ class SmoothieComponent extends React.Component {
           ref={canv => (this.canvas = canv)}
         />
         {this.props.tooltip ? (
-          <div style={tooltipParentStyle}>
+          <div style={tooltipParentStyle} className={this.props.classNameTooltip}>
             <Tooltip {...this.state.tooltip} />
           </div>
         ) : (
