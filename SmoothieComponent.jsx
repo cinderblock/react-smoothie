@@ -116,10 +116,10 @@ class SmoothieComponent extends React.Component {
           updateTooltip({ display: v == 'block' });
         },
         set top(v) {
-          updateTooltip({ top: Number(v.match(/^(\d+)px$/)[1]) });
-        },
-        set left(v) {
-          updateTooltip({ left: Number(v.match(/^(\d+)px$/)[1]) });
+          updateTooltip({
+            top: smoothie.mouseY,
+            left: smoothie.mouseX,
+          });
         },
       },
     };
