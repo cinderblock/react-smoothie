@@ -22,8 +22,6 @@ function DefaultTooltip(props) {
   );
 }
 
-const NoTooltip = () => <div />;
-
 function seriesOptsParser(opts) {
   const ret = {};
   let { r: R, g: G, b: B } = opts;
@@ -174,8 +172,6 @@ class SmoothieComponent extends React.Component {
       Tooltip = DefaultTooltip;
     }
 
-    if (!Tooltip) Tooltip = NoTooltip;
-
     return (
       <>
         <canvas
@@ -185,9 +181,13 @@ class SmoothieComponent extends React.Component {
           height={this.props.height}
           ref={canv => (this.canvas = canv)}
         />
-        <div style={tooltipParentStyle}>
-          <Tooltip {...this.state.tooltip} />
-        </div>
+        {this.props.tooltip ? (
+          <div style={tooltipParentStyle}>
+            <Tooltip {...this.state.tooltip} />
+          </div>
+        ) : (
+          <></>
+        )}
       </>
     );
   }
