@@ -173,4 +173,5 @@ ts.append(new Date().getTime(), Math.random());
 
 ## Test
 
-Run `yarn dev` to start the Webpack Dev Server and open the page on your browser.
+Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the page on your browser.
+Don't forget to run `yarn` or `npm install` first to install dependencies.
