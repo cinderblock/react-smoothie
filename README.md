@@ -125,6 +125,16 @@ See [`test.jsx`](test.jsx) for a standalone example.
 
 There are some extra props that control other behaviors.
 
+#### `tooltip`
+
+Generate a tooltip on mouseover
+
+- `false` does not enabble tooltip
+- `true` enables a default ugly tooltip
+- `function` that returns a stateless React component
+
+_default: `false`_
+
 #### `width`
 
 Control the width of the `<canvas>` used.
