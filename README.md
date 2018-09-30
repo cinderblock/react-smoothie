@@ -135,6 +135,12 @@ Generate a tooltip on mouseover
 
 _default: `false`_
 
+#### `responsive`
+
+Enabling responsive mode automatically sets the width to `100%`.
+
+_default: `false`_
+
 #### `width`
 
 Control the width of the `<canvas>` used.
