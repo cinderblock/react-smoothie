@@ -187,10 +187,10 @@ class SmoothieComponent extends React.Component {
     }
 
     return (
-      <>
+      <div className={this.props.classNameContainer} style={this.props.containerStyle || { position: 'relative' }}>
         {canvas}
         {tooltip}
-      </>
+      </div>
     );
   }
 
