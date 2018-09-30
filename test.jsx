@@ -12,6 +12,7 @@ class TestComponent extends React.Component {
       <SmoothieComponent
         ref="chart"
         responsive
+        interpolation="step"
         tooltip={props => {
           if (!props.display) return <div />;
 
