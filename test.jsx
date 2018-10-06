@@ -21,6 +21,8 @@ class TestComponent extends React.Component {
     return (
       <>
         <button onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</button>
+        <button onClick={() => this.setState({ delay: (this.state.delay || 0) + 500 })}>Increment Delay</button>
+        <button onClick={() => this.setState({ delay: (this.state.delay || 0) - 500 })}>Decrement Delay</button>
         {!this.state.toggle ? (
           <SmoothieComponent
             ref="chart"
@@ -28,6 +30,7 @@ class TestComponent extends React.Component {
             interpolation="step"
             minValue={0}
             maxValue={1}
+            streamDelay={this.state.delay}
             tooltip={props => {
               if (!props.display) return <div />;
 
