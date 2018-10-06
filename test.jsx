@@ -20,7 +20,7 @@ class TestComponent extends React.Component {
   render() {
     return (
       <>
-        <span onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</span>
+        <button onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</button>
         {!this.state.toggle ? (
           <SmoothieComponent
             ref="chart"
