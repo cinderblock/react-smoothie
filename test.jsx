@@ -65,7 +65,7 @@ class TestComponent extends React.Component {
             series={[
               {
                 data: TS,
-                b: 255,
+                r: 255,
                 lineWidth: 4,
               },
             ]}
