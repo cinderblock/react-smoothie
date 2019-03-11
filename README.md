@@ -211,7 +211,7 @@ var ts = this.refs.chart.addTimeSeries(
 ts.append(new Date().getTime(), Math.random());
 ```
 
-## Test
+## Test / Example
 
 Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the page on your browser.
 Don't forget to run `yarn` or `npm install` first to install dependencies.
