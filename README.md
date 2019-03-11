@@ -175,14 +175,28 @@ Experimental support for responsive charts was added in 0.3.0.
 Simply set the `responsive` prop to `true` and canvas will use the full width of the parent container.
 Height is still a controlled prop.
 
-## TimeSeries
+### TimeSeries
 
-The `TimeSeries` object from _Smoothie Chart_ is exposed via the `addTimeSeries()` function.
+`TimeSeries` is the main class that _Smoothie Chart_ uses internally for each series of data.
+There are two ways to access and use these objects, corresponding to the two API versions.
+
+#### New API
+
+`TimeSeries` is available as an import.
+
+```jsx
+const ts1 = new TimeSeries();
+ts1.append(time, Math.random());
+```
+
+#### Old API
+
+`TimeSeries` is exposed via the `addTimeSeries()` function.
 
 The optional first argument of `addTimeSeries()` gets passed as the options to the `TimeSeries` constructor.
 The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
 
-As of `0.4.0`, `TimeSeries` is also exported directly and can be passed as an argument to `addTimeSeries()`.
+As of `0.4.0`, an instance of `TimeSeries` can be passed as an argument to `addTimeSeries()`.
 
 ```jsx
 var ts = this.refs.chart.addTimeSeries(
