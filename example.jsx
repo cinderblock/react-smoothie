@@ -20,7 +20,7 @@ class TestComponent extends React.Component {
   render() {
     return (
       <>
-        <button onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existance</button>
+        <button onClick={() => this.setState({ toggle: !this.state.toggle })}>Toggle Existence</button>
         <button onClick={() => this.setState({ delay: (this.state.delay || 0) + 500 })}>Increment Delay</button>
         <button onClick={() => this.setState({ delay: (this.state.delay || 0) - 500 })}>Decrement Delay</button>
         {!this.state.toggle ? (
