@@ -68,6 +68,12 @@ function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentati
 
     // Otherwise we've got an object
 
+    // Only convert our fancy rgba object to a string for supported members
+    if (!(name == 'fillStyle' || name == 'strokeStyle')) {
+      ret[name] = val;
+      return;
+    }
+
     let { r, g, b, a } = val as rgba;
 
     if (r === undefined) r = R;
