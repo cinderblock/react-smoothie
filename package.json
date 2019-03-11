@@ -17,7 +17,8 @@
   },
   "files": [
     "SmoothieComponent.js",
-    "SmoothieComponent.d.ts"
+    "SmoothieComponent.d.ts",
+    "example.jsx"
   ],
   "keywords": [
     "smoothie",
