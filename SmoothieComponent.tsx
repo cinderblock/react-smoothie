@@ -46,6 +46,7 @@ function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentati
   }
 
   Object.entries(opts).forEach(([name, val]) => {
+    // Don't copy these to the final return
     switch (name) {
       case 'data':
       case 'r':
@@ -55,6 +56,7 @@ function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentati
       default:
     }
 
+    // Certain values are ready to go
     switch (typeof val) {
       case 'string':
       case 'number':
@@ -63,6 +65,8 @@ function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentati
         return;
       default:
     }
+
+    // Otherwise we've got an object
 
     let { r, g, b, a } = val as rgba;
 
@@ -145,9 +149,13 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     opts.tooltip = !!opts.tooltip;
 
     let smoothie = new SmoothieChart(opts) as SmoothieChart & {
-      tooltipEl: any;
+      // We need to tell TypeScript about some non-exposed internal variables
+
       mouseY: number;
       mouseX: number;
+
+      // TODO: type this more better
+      tooltipEl: any;
     };
 
     // Intercept the set data
