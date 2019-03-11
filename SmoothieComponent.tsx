@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SmoothieChart, TimeSeries, IChartOptions } from 'smoothie';
+import { SmoothieChart, TimeSeries, IChartOptions, ITimeSeriesOptions, ITimeSeriesPresentationOptions } from 'smoothie';
 
 function DefaultTooltip(props: { display?: boolean; time?: number; data?: TooltipData }) {
   if (!props.display) return <div />;
@@ -22,11 +22,17 @@ function DefaultTooltip(props: { display?: boolean; time?: number; data?: Toolti
 }
 
 type rgba = { r?: number; g?: number; b?: number; a?: number };
+type FancyPresentationOptions = rgba & {
+  fillStyle?: rgba | string;
+  strokeStyle?: rgba | string;
+  lineWidth?: number;
+};
 
-function seriesOptsParser(opts: rgba & { fillStyle?: rgba; strokeStyle?: rgba }) {
-  const ret = {};
+function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentationOptions {
+  const ret: ITimeSeriesPresentationOptions = {};
+
+  // Get default RGB values
   let { r: R, g: G, b: B } = opts;
-
   if (R === undefined) R = 0;
   if (G === undefined) G = 0;
   if (B === undefined) B = 0;
@@ -231,13 +237,15 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     );
   }
 
-  addTimeSeries(tsOpts, addOpts) {
+  addTimeSeries(addOpts: FancyPresentationOptions);
+  addTimeSeries(tsOpts: ITimeSeriesOptions, addOpts: FancyPresentationOptions);
+  addTimeSeries(tsOpts: FancyPresentationOptions | ITimeSeriesOptions, addOpts?: FancyPresentationOptions) {
     if (addOpts === undefined) {
-      addOpts = tsOpts;
+      addOpts = tsOpts as FancyPresentationOptions;
       tsOpts = undefined;
     }
 
-    let ts = tsOpts instanceof TimeSeries ? tsOpts : new TimeSeries(tsOpts);
+    let ts = tsOpts instanceof TimeSeries ? tsOpts : new TimeSeries(tsOpts as ITimeSeriesOptions);
 
     this.smoothie.addTimeSeries(ts, seriesOptsParser(addOpts));
     return ts;
