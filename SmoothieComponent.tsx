@@ -78,7 +78,7 @@ function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentati
       a = name == 'strokeStyle' ? 1 : r + g + b ? 0.2 : 0;
     }
 
-    ret[name] = `rgba(${r}, ${g}, ${b}, ${a})`;
+    ret[name] = `rgba(${r},${g},${b},${a})`;
   });
   return ret;
 }
