@@ -85,7 +85,6 @@ type SmoothieComponentProps = {
   streamDelay?: number;
   height?: number;
   width?: number;
-  responsive?: boolean;
   series?: any[];
   tooltip?: boolean | ((props: { display?: boolean; time?: number; data?: TooltipData }) => JSX.Element);
   doNotSimplifyData?: boolean;
@@ -96,7 +95,7 @@ type SmoothieComponentProps = {
   className?: string;
   classNameTooltip?: string;
   classNameContainer?: string;
-};
+} & IChartOptions;
 
 class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
   smoothie: SmoothieChart;
@@ -109,9 +108,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     super(props);
     this.state = { tooltip: {} };
 
-    let opts = Object.assign({}, props) as typeof props & {
-      tooltipFormatter: (time: number, data: TooltipData) => void;
-    };
+    let opts = Object.assign({}, props);
 
     // SmoothieChart's tooltip injects a div at the end of the page.
     // This will not do. We shall make our own and intercept the data.
@@ -124,24 +121,24 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     };
 
     opts.tooltipFormatter = (t, data) => {
-      if (!props.doNotSimplifyData) {
-        data = data.map(set => ({
-          index: set.index,
-          value: set.value,
-          series: { options: set.series.options },
-        }));
-      }
-
       updateTooltip({
         time: t,
-        data,
+        data: props.doNotSimplifyData
+          ? data
+          : data.map(set => ({
+              index: set.index,
+              value: set.value,
+              series: { options: (set.series as TimeSeries & { options: any }).options },
+            })),
       });
+
+      return '';
     };
 
     // Make boolean for smoothie
     opts.tooltip = !!opts.tooltip;
 
-    let smoothie = new SmoothieChart(opts as IChartOptions) as SmoothieChart & {
+    let smoothie = new SmoothieChart(opts) as SmoothieChart & {
       tooltipEl: any;
       mouseY: number;
       mouseX: number;
@@ -199,7 +196,9 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
       top: this.state.tooltip.top,
     };
 
-    let Tooltip = this.props.tooltip;
+    let Tooltip = this.props.tooltip as
+      | boolean
+      | ((props: { display?: boolean; time?: number; data?: TooltipData }) => JSX.Element);
 
     if (Tooltip === true) {
       Tooltip = DefaultTooltip;
