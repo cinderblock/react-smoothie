@@ -1,9 +1,8 @@
-import React from 'react';
-import reactAutoBind from 'react-autobind';
+import * as React from 'react';
 
-import { SmoothieChart, TimeSeries } from 'smoothie';
+import { SmoothieChart, TimeSeries, IChartOptions } from 'smoothie';
 
-function DefaultTooltip(props) {
+function DefaultTooltip(props: { display?: boolean; time?: number; data?: TooltipData }) {
   if (!props.display) return <div />;
 
   return (
@@ -22,7 +21,9 @@ function DefaultTooltip(props) {
   );
 }
 
-function seriesOptsParser(opts) {
+type rgba = { r?: number; g?: number; b?: number; a?: number };
+
+function seriesOptsParser(opts: rgba & { fillStyle?: rgba; strokeStyle?: rgba }) {
   const ret = {};
   let { r: R, g: G, b: B } = opts;
 
@@ -57,7 +58,7 @@ function seriesOptsParser(opts) {
       default:
     }
 
-    let { r, g, b, a } = val;
+    let { r, g, b, a } = val as rgba;
 
     if (r === undefined) r = R;
     if (g === undefined) g = G;
@@ -72,18 +73,50 @@ function seriesOptsParser(opts) {
   return ret;
 }
 
-class SmoothieComponent extends React.Component {
-  constructor(props) {
+type TooltipData = { series: any; index: number; value: number }[];
+
+type SmoothieComponentState = {
+  tooltip: { time?: number; data?: TooltipData; display?: boolean; top?: number; left?: number };
+};
+
+type Style = { [x: string]: number | string };
+
+type SmoothieComponentProps = {
+  streamDelay?: number;
+  height?: number;
+  width?: number;
+  responsive?: boolean;
+  series?: any[];
+  tooltip?: boolean | ((props: { display?: boolean; time?: number; data?: TooltipData }) => JSX.Element);
+  doNotSimplifyData?: boolean;
+  style?: Style;
+  tooltipParentStyle?: Style;
+  containerStyle?: Style;
+  classNameCanvas?: string;
+  className?: string;
+  classNameTooltip?: string;
+  classNameContainer?: string;
+};
+
+class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
+  smoothie: SmoothieChart;
+  static defaultProps = {
+    width: 800,
+    height: 200,
+    streamDelay: 0,
+  };
+  constructor(props: SmoothieComponentProps) {
     super(props);
     this.state = { tooltip: {} };
-    reactAutoBind(this);
 
-    let opts = Object.assign({}, props);
+    let opts = Object.assign({}, props) as typeof props & {
+      tooltipFormatter: (time: number, data: TooltipData) => void;
+    };
 
     // SmoothieChart's tooltip injects a div at the end of the page.
     // This will not do. We shall make our own and intercept the data.
 
-    let updateTooltip = o => {
+    let updateTooltip = (o: SmoothieComponentState['tooltip']) => {
       this.setState(state => {
         Object.assign(state.tooltip, o);
         return state;
@@ -105,17 +138,22 @@ class SmoothieComponent extends React.Component {
       });
     };
 
+    // Make boolean for smoothie
     opts.tooltip = !!opts.tooltip;
 
-    let smoothie = new SmoothieChart(opts);
+    let smoothie = new SmoothieChart(opts as IChartOptions) as SmoothieChart & {
+      tooltipEl: any;
+      mouseY: number;
+      mouseX: number;
+    };
 
     // Intercept the set data
     smoothie.tooltipEl = {
       style: {
-        set display(v) {
+        set display(v: string) {
           updateTooltip({ display: v == 'block' });
         },
-        set top(v) {
+        set top(v: any) {
           updateTooltip({
             top: smoothie.mouseY,
             left: smoothie.mouseX,
@@ -142,7 +180,7 @@ class SmoothieComponent extends React.Component {
   }
 
   render() {
-    let style = {};
+    let style = {} as { [x: string]: number | string };
 
     if (this.props.responsive === true) {
       style.width = '100%';
@@ -206,11 +244,5 @@ class SmoothieComponent extends React.Component {
     return ts;
   }
 }
-
-SmoothieComponent.defaultProps = {
-  width: 800,
-  height: 200,
-  streamDelay: 0,
-};
 
 export { SmoothieComponent as default, TimeSeries, DefaultTooltip };

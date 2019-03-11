@@ -3,6 +3,7 @@
   "version": "0.8.0",
   "description": "React wrapper for SmoothieChart",
   "main": "SmoothieComponent.js",
+  "types": "SmoothieComponent.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cinderblock/react-smoothie.git"
@@ -11,9 +12,13 @@
     "prepare": "install-vscode-extensions",
     "dev": "webpack-dev-server",
     "postversion": "npm publish",
-    "prepublishOnly": "gulp dist",
+    "prepublishOnly": "tsc",
     "postpublish": "git push origin master --tags"
   },
+  "files": [
+    "SmoothieComponent.js",
+    "SmoothieComponent.d.ts"
+  ],
   "keywords": [
     "smoothie",
     "chart",
@@ -31,17 +36,16 @@
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "dependencies": {
     "react": "^16.5.2",
-    "react-autobind": "^1.0.6",
-    "smoothie": "^1.35.0"
+    "smoothie": "^1.35.0",
+    "typescript": "^3.3.3333"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
+    "@types/react": "^16.8.7",
     "babel-loader": "^8.0.2",
     "file-loader": "^2.0.0",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^8.0.0",
     "html-webpack-plugin": "^3.2.0",
     "install-vscode-extensions": "^1.0.0",
     "prettier": "^1.14.3",

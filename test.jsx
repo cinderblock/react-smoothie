@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 
 import README from './README.md';
 
-import SmoothieComponent, { TimeSeries } from './SmoothieComponent.jsx';
+import SmoothieComponent, { TimeSeries } from '.';
 
 const TS = new TimeSeries();
 const TS2 = new TimeSeries();
