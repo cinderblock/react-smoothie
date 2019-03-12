@@ -99,13 +99,15 @@ type SmoothieComponentState = {
 
 type Style = { [x: string]: number | string };
 
+export type SmoothieComponentSeries = { data: TimeSeries } & PresentationOptions;
+
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type SmoothieComponentProps = {
   streamDelay?: number;
   height?: number;
   width?: number;
-  series?: any[];
+  series?: SmoothieComponentSeries[];
   tooltip?: true | false | ToolTip;
   doNotSimplifyData?: boolean;
   style?: Style;
