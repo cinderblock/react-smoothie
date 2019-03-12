@@ -24,13 +24,13 @@ function DefaultTooltip(props: { display?: boolean; time?: number; data?: Toolti
 export type ToolTip = typeof DefaultTooltip;
 
 type rgba = { r?: number; g?: number; b?: number; a?: number };
-type FancyPresentationOptions = rgba & {
+export type PresentationOptions = rgba & {
   fillStyle?: rgba | string;
   strokeStyle?: rgba | string;
   lineWidth?: number;
 };
 
-function seriesOptsParser(opts: FancyPresentationOptions): ITimeSeriesPresentationOptions {
+function seriesOptsParser(opts: PresentationOptions): ITimeSeriesPresentationOptions {
   const ret: ITimeSeriesPresentationOptions = {};
 
   // Get default RGB values
@@ -253,11 +253,11 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     );
   }
 
-  addTimeSeries(addOpts: FancyPresentationOptions);
-  addTimeSeries(tsOpts: ITimeSeriesOptions, addOpts: FancyPresentationOptions);
-  addTimeSeries(tsOpts: FancyPresentationOptions | ITimeSeriesOptions, addOpts?: FancyPresentationOptions) {
+  addTimeSeries(addOpts: PresentationOptions);
+  addTimeSeries(tsOpts: ITimeSeriesOptions, addOpts: PresentationOptions);
+  addTimeSeries(tsOpts: PresentationOptions | ITimeSeriesOptions, addOpts?: PresentationOptions) {
     if (addOpts === undefined) {
-      addOpts = tsOpts as FancyPresentationOptions;
+      addOpts = tsOpts as PresentationOptions;
       tsOpts = undefined;
     }
 
