@@ -103,7 +103,7 @@ export type SmoothieComponentSeries = { data: TimeSeries } & PresentationOptions
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-type SmoothieComponentProps = {
+export type SmoothieComponentProps = {
   streamDelay?: number;
   height?: number;
   width?: number;
