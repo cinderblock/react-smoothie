@@ -175,11 +175,13 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     // Intercept the set data
     smoothie.tooltipEl = {
       style: {
+        // Intercept when smoothie.js sets tooltipEl.style.display
         set display(v: 'block' | 'string') {
           if (v === lastDisplay) return;
           lastDisplay = v;
           updateTooltip({ display: v == 'block' });
         },
+        // Get smoothie's mouse events
         set top(v: any) {
           updateTooltip({
             top: smoothie.mouseY,
