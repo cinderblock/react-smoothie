@@ -12,7 +12,8 @@
     "prepare": "install-vscode-extensions",
     "dev": "webpack-dev-server",
     "postversion": "npm publish",
-    "prepublishOnly": "tsc",
+    "build": "tsc",
+    "prepublishOnly": "yarn build",
     "postpublish": "git push origin master --tags"
   },
   "files": [
