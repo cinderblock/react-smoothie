@@ -99,6 +99,8 @@ type SmoothieComponentState = {
 
 type Style = { [x: string]: number | string };
 
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
 type SmoothieComponentProps = {
   streamDelay?: number;
   height?: number;
@@ -113,7 +115,7 @@ type SmoothieComponentProps = {
   className?: string;
   classNameTooltip?: string;
   classNameContainer?: string;
-} & IChartOptions;
+} & Omit<IChartOptions, 'tooltip'>;
 
 class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
   smoothie: SmoothieChart;
