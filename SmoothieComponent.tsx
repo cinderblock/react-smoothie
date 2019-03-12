@@ -170,10 +170,14 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
       tooltipEl: any;
     };
 
+    let lastDisplay: string;
+
     // Intercept the set data
     smoothie.tooltipEl = {
       style: {
         set display(v: string) {
+          if (v === lastDisplay) return;
+          lastDisplay = v;
           updateTooltip({ display: v == 'block' });
         },
         set top(v: any) {
