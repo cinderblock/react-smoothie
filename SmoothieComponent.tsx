@@ -21,6 +21,8 @@ function DefaultTooltip(props: { display?: boolean; time?: number; data?: Toolti
   );
 }
 
+export type ToolTip = typeof DefaultTooltip;
+
 type rgba = { r?: number; g?: number; b?: number; a?: number };
 type FancyPresentationOptions = rgba & {
   fillStyle?: rgba | string;
