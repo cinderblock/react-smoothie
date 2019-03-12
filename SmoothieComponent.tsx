@@ -104,7 +104,7 @@ type SmoothieComponentProps = {
   height?: number;
   width?: number;
   series?: any[];
-  tooltip?: boolean | ((props: { display?: boolean; time?: number; data?: TooltipData }) => JSX.Element);
+  tooltip?: true | false | ToolTip;
   doNotSimplifyData?: boolean;
   style?: Style;
   tooltipParentStyle?: Style;
@@ -218,9 +218,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
       top: this.state.tooltip.top,
     };
 
-    let Tooltip = this.props.tooltip as
-      | boolean
-      | ((props: { display?: boolean; time?: number; data?: TooltipData }) => JSX.Element);
+    let Tooltip = this.props.tooltip as boolean | ToolTip;
 
     if (Tooltip === true) {
       Tooltip = DefaultTooltip;
