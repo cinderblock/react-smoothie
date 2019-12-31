@@ -13,7 +13,7 @@
     "dev": "webpack-dev-server",
     "postversion": "npm publish",
     "build": "tsc",
-    "prepublishOnly": "yarn build",
+    "prepare": "yarn build",
     "postpublish": "git push origin master --tags"
   },
   "files": [
