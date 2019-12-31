@@ -37,24 +37,24 @@
   },
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "dependencies": {
-    "react": "^16.5.2",
+    "react": "^16.12.0",
     "smoothie": "^1.35.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.7.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0",
-    "@types/react": "^16.8.7",
-    "babel-loader": "^8.0.2",
-    "file-loader": "^2.0.0",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "@types/react": "^16.9.17",
+    "babel-loader": "^8.0.6",
+    "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
     "install-vscode-extensions": "^1.0.0",
-    "prettier": "^1.14.3",
-    "react-dom": "^16.5.2",
-    "react-markdown": "^3.6.0",
-    "webpack": "^4.19.1",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9"
+    "prettier": "^1.19.1",
+    "react-dom": "^16.12.0",
+    "react-markdown": "^4.2.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
   }
 }
