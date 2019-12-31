@@ -215,3 +215,51 @@ ts.append(new Date().getTime(), Math.random());
 
 Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the page on your browser.
 Don't forget to run `yarn` or `npm install` first to install dependencies.
+
+## Change Log
+
+### v0.11.0
+
+- Use [`prepare`](https://docs.npmjs.com/misc/scripts#prepublish-and-prepare) script to allow installing from GitHub
+
+### v0.10.0
+
+- Export prop type
+
+### v0.9.0
+
+- TypeScript
+
+### v0.8.0
+
+- Fix tooltip positioning relative
+- Allow setting class via `classNameCanvas`
+
+### v0.7.0
+
+- Allow setting canvas css class
+
+### v0.6.0
+
+- Tooltip support
+
+### v0.5.0
+
+- Single option to set both style colors to be the same
+
+### v0.4.0
+
+- `TimeSeries` can be passed as an argument to `addTimeSeries()`
+- Use object to set style colors
+
+### v0.3.0
+
+- Export as Module
+
+### v0.2.0
+
+- Allow setting `streamDelay` option
+
+### v0.1.0
+
+- Fix passing args to Smoothie Chart
