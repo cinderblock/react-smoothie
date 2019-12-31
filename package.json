@@ -1,6 +1,6 @@
 {
   "name": "react-smoothie",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "React wrapper for SmoothieChart",
   "main": "SmoothieComponent.js",
   "types": "SmoothieComponent.d.ts",
