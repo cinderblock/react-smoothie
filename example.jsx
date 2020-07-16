@@ -31,6 +31,7 @@ class TestComponent extends React.Component {
             minValue={0}
             maxValue={1}
             streamDelay={this.state.delay}
+            nonRealtimeData={true}
             tooltip={props => {
               if (!props.display) return <div />;
 
