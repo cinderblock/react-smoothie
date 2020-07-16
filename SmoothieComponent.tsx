@@ -103,7 +103,10 @@ export type SmoothieComponentSeries = { data: TimeSeries } & PresentationOptions
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export type SmoothieComponentProps = {
+/**
+ * Props that we've defined in this package
+ */
+type ReactSmoothieProps = {
   streamDelay?: number;
   height?: number;
   width?: number;
@@ -117,7 +120,14 @@ export type SmoothieComponentProps = {
   className?: string;
   classNameTooltip?: string;
   classNameContainer?: string;
-} & Omit<IChartOptions, 'tooltip'>;
+};
+
+/**
+ * Props that we pass onto underlying Smoothie instance
+ */
+type SmoothieProps = Omit<IChartOptions, 'tooltip'>;
+
+export type SmoothieComponentProps = ReactSmoothieProps & SmoothieProps;
 
 class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
   smoothie: SmoothieChart;
@@ -130,7 +140,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     super(props);
     this.state = { tooltip: {} };
 
-    let opts = Object.assign({}, props);
+    let opts: IChartOptions = Object.assign({}, props, { tooltip: !!props.tooltip });
 
     // SmoothieChart's tooltip injects a div at the end of the page.
     // This will not do. We shall make our own and intercept the data.
@@ -156,9 +166,6 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
 
       return '';
     };
-
-    // Make boolean for smoothie
-    opts.tooltip = !!opts.tooltip;
 
     let smoothie = new SmoothieChart(opts) as SmoothieChart & {
       // We need to tell TypeScript about some non-exposed internal variables
