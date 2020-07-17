@@ -13,6 +13,10 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
 
+      # Install dependencies
+      - run: yarn --frozen-lockfile
+
+      # Install build and publish
       - run: npm --ignore-engines publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
