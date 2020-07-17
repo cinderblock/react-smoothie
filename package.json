@@ -34,10 +34,8 @@
   "scripts": {
     "setup": "install-vscode-extensions",
     "dev": "webpack-dev-server",
-    "postversion": "npm publish",
     "build": "tsc",
-    "prepare": "yarn build",
-    "postpublish": "git push origin master --tags"
+    "prepare": "yarn build"
   },
   "dependencies": {
     "react": "^16.12.0",
