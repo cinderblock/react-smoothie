@@ -291,6 +291,10 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     this.smoothie.addTimeSeries(ts, seriesOptsParser(addOpts));
     return ts;
   }
+
+  removeTimeSeries(ts: TimeSeries) {
+    this.smoothie.removeTimeSeries(ts);
+  }
 }
 
 export { SmoothieComponent as default, TimeSeries, DefaultTooltip };
