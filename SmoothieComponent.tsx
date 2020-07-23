@@ -216,11 +216,11 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
   }
 
   componentDidUpdate(prevProps: SmoothieComponentProps, prevState: SmoothieComponentState) {
-    for (let series of prevProps.series) {
+    for (const series of prevProps.series) {
       if (!this.props.series.includes(series)) this.smoothie.removeTimeSeries(series.data);
     }
 
-    for (let series of this.props.series) {
+    for (const series of this.props.series) {
       if (!prevProps.series.includes(series)) this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
     }
   }
