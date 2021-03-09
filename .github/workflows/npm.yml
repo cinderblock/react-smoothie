@@ -23,8 +23,11 @@ jobs:
         with:
           registry-url: 'https://registry.npmjs.org'
 
+      # Install dependencies and Build
+      - run: yarn --frozen-lockfile
+
       # Publish
-      - run: yarn --frozen-lockfile publish
+      - run: yarn publish
         if:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -34,6 +37,6 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
 
       # Publish to GitHub
-      - run: yarn --frozen-lockfile publish
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
