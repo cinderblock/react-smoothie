@@ -218,6 +218,11 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ## Change Log
 
+### v0.12.x
+
+- Update dep to latest
+- Publish to GitHub Packages
+
 ### v0.11.0
 
 - Use [`prepare`](https://docs.npmjs.com/misc/scripts#prepublish-and-prepare) script to allow installing from GitHub
