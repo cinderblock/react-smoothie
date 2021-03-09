@@ -41,7 +41,7 @@ const ts2 = new TimeSeries({
   resetBoundsInterval: 3000,
 });
 
-setInterval(function() {
+setInterval(() => {
   var time = new Date().getTime();
 
   ts1.append(time, Math.random());
@@ -49,7 +49,7 @@ setInterval(function() {
 }, 500);
 
 var TestComponent = React.createClass({
-  render: function() {
+  render() {
     return (
       <SmoothieComponent
         responsive
@@ -78,11 +78,11 @@ var TestComponent = React.createClass({
 
 ```jsx
 var TestComponent = React.createClass({
-  render: function() {
+  render() {
     return <SmoothieComponent ref="chart" responsive height={300} />;
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     // Initialize TimeSeries yourself
     var ts1 = new TimeSeries({});
 
@@ -105,7 +105,7 @@ var TestComponent = React.createClass({
       }
     );
 
-    this.dataGenerator = setInterval(function() {
+    this.dataGenerator = setInterval(() => {
       var time = new Date().getTime();
 
       ts1.append(time, Math.random());
@@ -113,7 +113,7 @@ var TestComponent = React.createClass({
     }, 500);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     clearInterval(this.dataGenerator);
   },
 });
