@@ -125,7 +125,7 @@ See [`example.jsx`](example.jsx) for a relatively standalone example.
 
 ## Props
 
-`SmoothieComponent`'s props are all passed as the options object to _Smoothie Charts_' constructor.
+`SmoothieComponent`'s props are all passed as the options object to the _Smoothie Charts_ constructor.
 
 ```jsx
 <SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
