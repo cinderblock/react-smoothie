@@ -12,7 +12,7 @@ module.exports = {
   mode: 'development',
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'React Smoothie Chart Test',
+      title: 'React Smoothie Charts Test',
     }),
   ],
   devServer: {

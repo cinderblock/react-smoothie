@@ -1,6 +1,6 @@
 # react-smoothie
 
-React wrapper for [Smoothie Chart](http://smoothiecharts.org/)
+React wrapper for [Smoothie Charts](http://smoothiecharts.org/).
 
 ## Install
 
@@ -125,7 +125,7 @@ See [`example.jsx`](example.jsx) for a relatively standalone example.
 
 ## Props
 
-`SmoothieComponent`'s props are all passed as the options object to _Smoothie Chart_'s constructor.
+`SmoothieComponent`'s props are all passed as the options object to _Smoothie Charts_' constructor.
 
 ```jsx
 <SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
@@ -177,7 +177,7 @@ Height is still a controlled prop.
 
 ### TimeSeries
 
-`TimeSeries` is the main class that _Smoothie Chart_ uses internally for each series of data.
+`TimeSeries` is the main class that _Smoothie Charts_ uses internally for each series of data.
 There are two ways to access and use these objects, corresponding to the two API versions.
 
 #### New API
@@ -262,4 +262,4 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ### v0.1.0
 
-- Fix passing args to Smoothie Chart
+- Fix passing args to Smoothie Charts

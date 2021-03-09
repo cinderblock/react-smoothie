@@ -1,7 +1,7 @@
 {
   "name": "react-smoothie",
   "version": "0.12.4",
-  "description": "React wrapper for SmoothieChart",
+  "description": "React wrapper for Smoothie Charts",
   "author": "Cameron Tacklind <cameron@tacklind.com>",
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "license": "ISC",

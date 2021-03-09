@@ -142,7 +142,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
 
     let opts: IChartOptions = Object.assign({}, props, { tooltip: !!props.tooltip });
 
-    // SmoothieChart's tooltip injects a div at the end of the page.
+    // SmoothieCharts's tooltip injects a div at the end of the page.
     // This will not do. We shall make our own and intercept the data.
 
     let updateTooltip = (o: SmoothieComponentState['tooltip']) => {
