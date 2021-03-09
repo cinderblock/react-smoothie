@@ -12,8 +12,8 @@ jobs:
       # Install dependencies and Build
       - run: yarn --frozen-lockfile
 
-  publish:
-    name: Publish
+  publishNpm:
+    name: Publish Npm
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
@@ -32,9 +32,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
+  publishGithub:
+    name: Publish GitHub
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'
+
+      # Install dependencies and Build
+      - run: yarn --frozen-lockfile
 
       # Publish to GitHub
       - run: yarn publish
