@@ -28,9 +28,6 @@
     "SmoothieComponent.d.ts",
     "example.jsx"
   ],
-  "engines": {
-    "npm": "please-use-yarn"
-  },
   "scripts": {
     "setup": "install-vscode-extensions",
     "dev": "webpack-dev-server",
