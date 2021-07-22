@@ -218,6 +218,10 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ## Change Log
 
+### v0.13.0
+
+- Remove Yarn restrictions
+
 ### v0.12.x
 
 - Update dep to latest
