@@ -25,10 +25,22 @@ export type ToolTip = typeof DefaultTooltip;
 
 type rgba = { r?: number; g?: number; b?: number; a?: number };
 export type PresentationOptions = rgba & {
-  fillStyle?: rgba | string;
-  strokeStyle?: rgba | string;
+  fillStyle?: rgba | string | CanvasGradient | CanvasPattern;
+  strokeStyle?: rgba | string | CanvasGradient | CanvasPattern;
   lineWidth?: number;
 };
+
+// TODO: SmoothieCharts should update their types so that this is less hacky
+type SmoothieFillStyle = Exclude<ITimeSeriesPresentationOptions['fillStyle'], string>;
+type SmoothieStrokeStyle = Exclude<ITimeSeriesPresentationOptions['strokeStyle'], string>;
+// type SmoothieStyle = CanvasGradient | CanvasPattern;
+
+function isSmoothieFillStyle(value: any): value is SmoothieFillStyle {
+  return value instanceof CanvasGradient || value instanceof CanvasPattern;
+}
+function isSmoothieStrokeStyle(value: any): value is SmoothieStrokeStyle {
+  return value instanceof CanvasGradient || value instanceof CanvasPattern;
+}
 
 function seriesOptsParser(opts: PresentationOptions): ITimeSeriesPresentationOptions {
   const ret: ITimeSeriesPresentationOptions = {};
@@ -72,6 +84,11 @@ function seriesOptsParser(opts: PresentationOptions): ITimeSeriesPresentationOpt
 
     // Only convert our fancy rgba object to a string for supported members
     if (!(name == 'fillStyle' || name == 'strokeStyle')) {
+      ret[name] = val;
+      return;
+    }
+
+    if ((name == 'fillStyle' && isSmoothieFillStyle(val)) || (name == 'strokeStyle' && isSmoothieStrokeStyle(val))) {
       ret[name] = val;
       return;
     }
