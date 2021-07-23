@@ -16,6 +16,12 @@ With NPM:
 npm install react-smoothie --save
 ```
 
+### Install from GitHub
+
+```bash
+npm i cinderblock/react-smoothie
+```
+
 ## Usage
 
 There are 2 main ways to populate data.
