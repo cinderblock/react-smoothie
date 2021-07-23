@@ -23,88 +23,86 @@ function DefaultTooltip(props: { display?: boolean; time?: number; data?: Toolti
 
 export type ToolTip = typeof DefaultTooltip;
 
-type rgba = { r?: number; g?: number; b?: number; a?: number };
-export type PresentationOptions = rgba & {
-  fillStyle?: rgba | string | CanvasGradient | CanvasPattern;
-  strokeStyle?: rgba | string | CanvasGradient | CanvasPattern;
-  lineWidth?: number;
-};
-
 // TODO: SmoothieCharts should update their types so that this is less hacky
-type SmoothieFillStyle = Exclude<ITimeSeriesPresentationOptions['fillStyle'], string>;
-type SmoothieStrokeStyle = Exclude<ITimeSeriesPresentationOptions['strokeStyle'], string>;
-// type SmoothieStyle = CanvasGradient | CanvasPattern;
+type CanvasStyle = CanvasGradient | CanvasPattern;
 
-function isSmoothieFillStyle(value: any): value is SmoothieFillStyle {
+/**
+ * undefined means 0
+ */
+type rgba = { r?: number; g?: number; b?: number; a?: number };
+
+type RGBA = Required<rgba>;
+
+export type PresentationOptions = rgba & {
+  fillStyle?: rgba | CanvasStyle | ITimeSeriesPresentationOptions['fillStyle'];
+  strokeStyle?: rgba | CanvasStyle | ITimeSeriesPresentationOptions['strokeStyle'];
+} & Omit<ITimeSeriesPresentationOptions, 'fillStyle' | 'strokeStyle'>;
+
+function isCanvasStyle(value: any): value is CanvasStyle {
   return value instanceof CanvasGradient || value instanceof CanvasPattern;
 }
-function isSmoothieStrokeStyle(value: any): value is SmoothieStrokeStyle {
-  return value instanceof CanvasGradient || value instanceof CanvasPattern;
+function isRgba(style: PresentationOptions['fillStyle'] | PresentationOptions['strokeStyle']): style is rgba {
+  if (isCanvasStyle(style)) return false;
+
+  if (typeof style !== 'object') return false;
+  return true;
+
+  return typeof style === 'object';
 }
 
+function convertRGBAtoCSSString(rgba: RGBA): string {
+  const css = `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
+  return css;
+}
+
+function extractRGBAFromPresentationOptions(options: PresentationOptions): RGBA {
+  const { r, g, b, a } = options;
+  return {
+    r: r ?? 0,
+    g: g ?? 0,
+    b: b ?? 0,
+    a: a ?? 0,
+  };
+}
+
+/**
+ * We want to let users specify the presentation options a little more loosely.
+ *
+ * This converts our `PresentationOptions` to the options that SmoothieChart expects.
+ */
 function seriesOptsParser(opts: PresentationOptions): ITimeSeriesPresentationOptions {
-  const ret: ITimeSeriesPresentationOptions = {};
+  const defColor = extractRGBAFromPresentationOptions(opts);
 
-  // Get default RGB values
-  let { r: R, g: G, b: B } = opts;
-  if (R === undefined) R = 0;
-  if (G === undefined) G = 0;
-  if (B === undefined) B = 0;
+  let fillStyle: PresentationOptions['fillStyle'];
 
-  if (opts.fillStyle === undefined && R + G + B) {
-    opts.fillStyle = {};
+  if (isCanvasStyle(opts.fillStyle) || typeof opts.fillStyle === 'string') {
+    fillStyle = opts.fillStyle;
+  } else {
+    fillStyle = convertRGBAtoCSSString({ ...defColor, ...{ a: 0.2 }, ...opts.fillStyle });
   }
 
-  if (opts.strokeStyle === undefined && R + G + B) {
-    opts.strokeStyle = {};
+  let strokeStyle: PresentationOptions['strokeStyle'];
+
+  if (isCanvasStyle(opts.strokeStyle) || typeof opts.strokeStyle === 'string') {
+    strokeStyle = opts.strokeStyle;
+  } else {
+    strokeStyle = convertRGBAtoCSSString({ ...defColor, ...{ a: 1 }, ...opts.strokeStyle });
   }
 
-  Object.entries(opts).forEach(([name, val]) => {
-    // Don't copy these to the final return
-    switch (name) {
-      case 'data':
-      case 'r':
-      case 'g':
-      case 'b':
-        return;
-      default:
-    }
+  const ret = {
+    ...opts,
+    data: '',
+    // TODO: SmoothieCharts should update their types so that this is less hacky
+    fillStyle: fillStyle as ITimeSeriesPresentationOptions['fillStyle'],
+    strokeStyle: strokeStyle as ITimeSeriesPresentationOptions['strokeStyle'],
+  };
 
-    // Certain values are ready to go
-    switch (typeof val) {
-      case 'string':
-      case 'number':
-      case 'boolean':
-        ret[name] = val;
-        return;
-      default:
-    }
+  delete ret.r;
+  delete ret.g;
+  delete ret.b;
+  delete ret.a;
+  delete ret.data;
 
-    // Otherwise we've got an object
-
-    // Only convert our fancy rgba object to a string for supported members
-    if (!(name == 'fillStyle' || name == 'strokeStyle')) {
-      ret[name] = val;
-      return;
-    }
-
-    if ((name == 'fillStyle' && isSmoothieFillStyle(val)) || (name == 'strokeStyle' && isSmoothieStrokeStyle(val))) {
-      ret[name] = val;
-      return;
-    }
-
-    let { r, g, b, a } = val as rgba;
-
-    if (r === undefined) r = R;
-    if (g === undefined) g = G;
-    if (b === undefined) b = B;
-
-    if (a === undefined) {
-      a = name == 'strokeStyle' ? 1 : r + g + b ? 0.2 : 0;
-    }
-
-    ret[name] = `rgba(${r},${g},${b},${a})`;
-  });
   return ret;
 }
 
@@ -296,9 +294,9 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     );
   }
 
-  addTimeSeries(addOpts: PresentationOptions);
-  addTimeSeries(tsOpts: ITimeSeriesOptions, addOpts: PresentationOptions);
-  addTimeSeries(tsOpts: PresentationOptions | ITimeSeriesOptions, addOpts?: PresentationOptions) {
+  addTimeSeries(addOpts: PresentationOptions): TimeSeries;
+  addTimeSeries(tsOpts: ITimeSeriesOptions, addOpts: PresentationOptions): TimeSeries;
+  addTimeSeries(tsOpts: PresentationOptions | ITimeSeriesOptions, addOpts?: PresentationOptions): TimeSeries {
     if (addOpts === undefined) {
       addOpts = tsOpts as PresentationOptions;
       tsOpts = undefined;
