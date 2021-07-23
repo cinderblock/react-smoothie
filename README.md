@@ -218,6 +218,11 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ## Change Log
 
+### v0.14.0
+
+- Improve Types for Canvas drawing (setting gradients)
+- Rewrite of options processing
+- New modern React (with hooks) example
 ### v0.13.0
 
 - Remove Yarn restrictions
