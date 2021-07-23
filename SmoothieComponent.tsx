@@ -148,6 +148,7 @@ export type SmoothieComponentProps = ReactSmoothieProps & SmoothieProps;
 
 class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
   smoothie: SmoothieChart;
+  canvas: HTMLCanvasElement;
   static defaultProps = {
     width: 800,
     height: 200,
@@ -274,7 +275,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
         style={style}
         width={this.props.responsive === true ? undefined : this.props.width}
         height={this.props.height}
-        ref={canv => canv && this.smoothie.streamTo(canv, this.props.streamDelay)}
+        ref={canv => (this.canvas = canv) && this.smoothie.streamTo(canv, this.props.streamDelay)}
       />
     );
 
