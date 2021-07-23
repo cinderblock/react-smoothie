@@ -40,7 +40,7 @@ import SmoothieComponent, { TimeSeries } from 'react-smoothie';
 
 ### New prop based API
 
-```jsx
+```tsx
 const ts1 = new TimeSeries({});
 const ts2 = new TimeSeries({
   resetBounds: true,
@@ -82,7 +82,7 @@ var TestComponent = React.createClass({
 
 ### Old reference based API
 
-```jsx
+```tsx
 var TestComponent = React.createClass({
   render() {
     return <SmoothieComponent ref="chart" responsive height={300} />;
@@ -127,13 +127,13 @@ var TestComponent = React.createClass({
 
 ### More Examples
 
-See [`example.jsx`](example.jsx) for a relatively standalone and complete example.
+See [`example.tsx`](example.tsx) for a relatively standalone and complete example.
 
 ## Props
 
 `SmoothieComponent`'s props are all passed as the options object to the _Smoothie Charts_ constructor.
 
-```jsx
+```tsx
 <SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
 ```
 
@@ -190,7 +190,7 @@ There are two ways to access and use these objects, corresponding to the two API
 
 `TimeSeries` is available as an import.
 
-```jsx
+```tsx
 const ts1 = new TimeSeries();
 ts1.append(time, Math.random());
 ```
@@ -204,7 +204,7 @@ The last argument of `addTimeSeries()` gets passed as the options argument of `S
 
 As of `0.4.0`, an instance of `TimeSeries` can be passed as an argument to `addTimeSeries()`.
 
-```jsx
+```tsx
 var ts = this.refs.chart.addTimeSeries(
   {
     /* Optional TimeSeries opts */

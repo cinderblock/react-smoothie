@@ -19,6 +19,7 @@
     "live",
     "realtime",
     "jsx",
+    "tsx",
     "react"
   ],
   "main": "SmoothieComponent.js",
@@ -26,7 +27,7 @@
   "files": [
     "SmoothieComponent.js",
     "SmoothieComponent.d.ts",
-    "example.jsx"
+    "example.tsx"
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
