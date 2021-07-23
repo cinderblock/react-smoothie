@@ -30,30 +30,28 @@
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
-    "dev": "webpack-dev-server",
+    "dev": "nodemon -w webpack.config.js --exec webpack serve",
     "build": "tsc",
-    "prepare": "yarn build"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "react": "^17.0.2",
-    "smoothie": "^1.35.0",
-    "typescript": "^4.3.5"
+    "smoothie": "^1.35.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
-    "@babel/preset-react": "^7.14.5",
-    "@types/react": "^17.0.13",
-    "babel-loader": "^8.2.2",
+    "@types/react": "^17.0.14",
+    "@types/react-dom": "^17.0.9",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
     "install-vscode-extensions": "^1.0.0",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "react-dom": "^17.0.2",
     "react-markdown": "^6.0.2",
-    "webpack": "^5.42.1",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.5",
+    "webpack": "^5.46.0",
     "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2",
-    "yarn": "^1.22.10"
+    "webpack-dev-server": "^3.11.2"
   }
 }

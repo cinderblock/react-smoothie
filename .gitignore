@@ -6,3 +6,7 @@
 
 # Generated test files
 /test
+
+# Generated example files
+example.js
+example.d.ts
