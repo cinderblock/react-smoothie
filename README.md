@@ -223,6 +223,8 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 - Improve Types for Canvas drawing (setting gradients)
 - Rewrite of options processing
 - New modern React (with hooks) example
+- Switch to Npm
+
 ### v0.13.0
 
 - Remove Yarn restrictions

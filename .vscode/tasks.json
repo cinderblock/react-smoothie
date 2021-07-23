@@ -4,8 +4,8 @@
     {
       "label": "Launch Development Server",
       "type": "shell",
-      "command": "yarn",
-      "args": ["dev"],
+      "command": "npm",
+      "args": ["run", "dev"],
       "presentation": {
         "panel": "shared"
       },

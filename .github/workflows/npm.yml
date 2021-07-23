@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v2
 
       # Install dependencies and Build
-      - run: yarn --frozen-lockfile
+      - run: npm ci
 
   publishNpm:
     name: Publish Npm
@@ -24,11 +24,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       # Install dependencies and Build
-      - run: yarn --frozen-lockfile
+      - run: npm ci
 
       # Publish
-      - run: yarn publish
-        if:
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -44,9 +43,9 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
 
       # Install dependencies and Build
-      - run: yarn --frozen-lockfile
+      - run: npm ci
 
       # Publish to GitHub
-      - run: yarn publish
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
