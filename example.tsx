@@ -28,7 +28,7 @@ function TestComponent() {
           minValue={0}
           maxValue={1}
           streamDelay={delay}
-          nonRealtimeData={true}
+          nonRealtimeData={false}
           tooltip={props => {
             if (!props.display) return <div />;
 
@@ -83,7 +83,7 @@ const interval = setInterval(function () {
   // ts1.append(time, Math.random());
   TS2.append(time, Math.random());
   TS.append(time, Math.random());
-}, 500);
+}, 1000);
 
 function Readme() {
   const [source, setSource] = React.useState<string>();
