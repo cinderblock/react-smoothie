@@ -13,6 +13,20 @@
         "cwd": "${workspaceRoot}"
       },
       "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Compile to CommonJS",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "presentation": {
+        "panel": "shared"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "problemMatcher": ["$tsc"],
       "group": {
         "kind": "build",
         "isDefault": true
