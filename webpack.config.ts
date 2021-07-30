@@ -1,8 +1,9 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { Configuration } from 'webpack';
+import 'webpack-dev-server';
 
-module.exports = {
+const config: Configuration = {
   entry: './example.tsx',
   output: {
     filename: 'bundle.js',
@@ -44,3 +45,5 @@ module.exports = {
     ],
   },
 };
+
+export default config;

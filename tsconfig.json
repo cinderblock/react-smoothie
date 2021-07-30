@@ -1,13 +1,14 @@
 {
   "files": ["SmoothieComponent.tsx", "example.tsx", "markdown.d.ts"],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "module": "es6",
+    // "noImplicitAny": true,
+    "module": "CommonJS",
     // "allowJs": true,
     "moduleResolution": "node",
     "target": "es5",
     "lib": ["es2018", "dom"],
     "declaration": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react"
   }

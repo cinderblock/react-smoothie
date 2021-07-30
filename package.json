@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
-    "dev": "nodemon -w webpack.config.js --exec webpack serve",
+    "dev": "nodemon -w webpack.config.ts -w tsconfig.json -w package.json --exec webpack serve",
     "build": "tsc",
     "prepare": "npm run build"
   },
@@ -42,6 +42,8 @@
   "devDependencies": {
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^3.11.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
     "install-vscode-extensions": "^1.0.0",
@@ -50,6 +52,7 @@
     "react-dom": "^17.0.2",
     "react-markdown": "^6.0.2",
     "ts-loader": "^9.2.3",
+    "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
     "webpack": "^5.46.0",
     "webpack-cli": "^4.7.2",
