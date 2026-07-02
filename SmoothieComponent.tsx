@@ -39,7 +39,11 @@ export type PresentationOptions = rgba & {
 } & Omit<ITimeSeriesPresentationOptions, 'fillStyle' | 'strokeStyle'>;
 
 function isCanvasStyle(value: any): value is CanvasStyle {
-  return value instanceof CanvasGradient || value instanceof CanvasPattern;
+  // Guard for environments without canvas support (SSR, jsdom)
+  return (
+    (typeof CanvasGradient !== 'undefined' && value instanceof CanvasGradient) ||
+    (typeof CanvasPattern !== 'undefined' && value instanceof CanvasPattern)
+  );
 }
 function isRgba(style: PresentationOptions['fillStyle'] | PresentationOptions['strokeStyle']): style is rgba {
   if (isCanvasStyle(style)) return false;
@@ -232,12 +236,15 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
   }
 
   componentDidUpdate(prevProps: SmoothieComponentProps, prevState: SmoothieComponentState) {
-    for (const series of prevProps.series) {
-      if (!this.props.series.includes(series)) this.smoothie.removeTimeSeries(series.data);
+    const prevSeries = prevProps.series ?? [];
+    const series = this.props.series ?? [];
+
+    for (const s of prevSeries) {
+      if (!series.includes(s)) this.smoothie.removeTimeSeries(s.data);
     }
 
-    for (const series of this.props.series) {
-      if (!prevProps.series.includes(series)) this.smoothie.addTimeSeries(series.data, seriesOptsParser(series));
+    for (const s of series) {
+      if (!prevSeries.includes(s)) this.smoothie.addTimeSeries(s.data, seriesOptsParser(s));
     }
   }
 
