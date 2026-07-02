@@ -294,10 +294,22 @@ Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ### v0.14.0
 
+- **Synchronized rendering, on by default**: all charts share a single `requestAnimationFrame`
+  loop instead of one loop per chart. Visually identical; opt out with
+  `<SmoothieProvider coordinate={false}>`
+- New `<SmoothieProvider>` component: per-subtree `fps` cap, `paused`, and `coordinate` opt-out
+- New per-chart `paused` prop
+- Rendering stops while the browser tab is hidden and resumes cleanly
+- `react` is now a peer dependency (`>=16.8`) instead of a direct dependency,
+  fixing possible duplicate-React installs in consumers
 - Improve Types for Canvas drawing (setting gradients)
 - Rewrite of options processing
 - New modern React (with hooks) example
 - Switch to Npm
+- Update all dependencies (React 19, TypeScript 5.9, webpack-dev-server 5)
+- Add test suite (vitest + Testing Library)
+- Fix crash in `componentDidUpdate` when the `series` prop is not used
+- Fix `CanvasGradient` reference error in environments without canvas (SSR)
 
 ### v0.13.0
 
