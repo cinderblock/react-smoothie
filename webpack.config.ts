@@ -17,9 +17,11 @@ const config: Configuration = {
     }),
   ],
   devServer: {
-    overlay: {
-      warnings: true,
-      errors: true,
+    client: {
+      overlay: {
+        warnings: true,
+        errors: true,
+      },
     },
     // open: true,
   },
@@ -35,12 +37,7 @@ const config: Configuration = {
       },
       {
         test: /\.(md)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {},
-          },
-        ],
+        type: 'asset/resource',
       },
     ],
   },

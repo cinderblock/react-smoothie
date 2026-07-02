@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import ReactMarkdown from 'react-markdown';
 
@@ -102,10 +102,9 @@ function Readme() {
   return fail ? <>Failed to load markdown:{source}</> : <ReactMarkdown children={source} />;
 }
 
-ReactDOM.render(
+createRoot(document.body.appendChild(document.createElement('div'))).render(
   <>
     <TestComponent />
     <Readme />
-  </>,
-  document.body.appendChild(document.createElement('div'))
+  </>
 );
