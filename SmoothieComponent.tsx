@@ -2,6 +2,59 @@ import * as React from 'react';
 
 import { SmoothieChart, TimeSeries, IChartOptions, ITimeSeriesOptions, ITimeSeriesPresentationOptions } from 'smoothie';
 
+import { RenderCoordinator, RenderCoordinatorOptions, globalCoordinator } from './RenderCoordinator';
+
+export type SmoothieContextValue = {
+  /** Coordinator rendering this subtree's charts, or `null` when charts should self-animate */
+  coordinator: RenderCoordinator | null;
+};
+
+/**
+ * `undefined` (no provider) means charts use the module-wide `globalCoordinator`.
+ */
+const SmoothieContext = React.createContext<SmoothieContextValue | undefined>(undefined);
+
+export type SmoothieProviderProps = RenderCoordinatorOptions & {
+  /**
+   * Set to `false` to restore per-chart self-animation (one `requestAnimationFrame` loop
+   * per chart, as driven by Smoothie Charts itself) for all charts in this subtree.
+   *
+   * _default: `true`_
+   */
+  coordinate?: boolean;
+
+  children?: React.ReactNode;
+};
+
+/**
+ * Renders all `SmoothieComponent` charts beneath it from a single shared animation loop —
+ * separate from the global one — with optional frame rate cap and pausing.
+ *
+ * Charts don't need a provider to be coordinated; without one they share the global loop.
+ * Use a provider to control `fps`/`paused` for a subtree, or `coordinate={false}` to opt
+ * a subtree out of coordination entirely. The nearest provider wins.
+ */
+export function SmoothieProvider(props: SmoothieProviderProps) {
+  const { fps = 0, paused = false, coordinate = true, children } = props;
+
+  const ref = React.useRef<RenderCoordinator | null>(null);
+  // Lazily create the coordinator with the initial options so the first frames after mount
+  // already honor them; later changes are applied by the effects below.
+  const coordinator = (ref.current ??= new RenderCoordinator({ fps, paused }));
+
+  React.useEffect(() => {
+    coordinator.setFps(fps);
+  }, [coordinator, fps]);
+
+  React.useEffect(() => {
+    coordinator.setPaused(paused);
+  }, [coordinator, paused]);
+
+  const value = React.useMemo(() => ({ coordinator: coordinate ? coordinator : null }), [coordinate, coordinator]);
+
+  return <SmoothieContext.Provider value={value}>{children}</SmoothieContext.Provider>;
+}
+
 function DefaultTooltip(props: { display?: boolean; time?: number; data?: TooltipData }) {
   if (!props.display) return <div />;
 
@@ -25,6 +78,16 @@ export type ToolTip = typeof DefaultTooltip;
 
 // TODO: SmoothieCharts should update their types so that this is less hacky
 type CanvasStyle = CanvasGradient | CanvasPattern;
+
+/**
+ * Non-exposed SmoothieChart internals we need for coordinated rendering.
+ * The mouse handlers are bound in the SmoothieChart constructor, so their identities are stable.
+ */
+type SmoothieChartInternals = SmoothieChart & {
+  delay?: number;
+  mousemove: (evt: MouseEvent) => void;
+  mouseout: (evt: MouseEvent) => void;
+};
 
 /**
  * undefined means 0
@@ -127,6 +190,8 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
  */
 type ReactSmoothieProps = {
   streamDelay?: number;
+  /** Freeze this chart (skip its frames) while `true`. The chart stays mounted and registered. */
+  paused?: boolean;
   height?: number;
   width?: number;
   series?: SmoothieComponentSeries[];
@@ -150,7 +215,11 @@ export type SmoothieComponentProps = ReactSmoothieProps & SmoothieProps;
 
 class SmoothieComponent extends React.Component<SmoothieComponentProps, SmoothieComponentState> {
   smoothie: SmoothieChart;
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | null = null;
+  /** Current canvas binding, so changes to the canvas or animation mode can be detached cleanly */
+  private streaming?: { canvas: HTMLCanvasElement; coordinator: RenderCoordinator | null };
+  static contextType = SmoothieContext;
+  declare context: React.ContextType<typeof SmoothieContext>;
   static defaultProps = {
     width: 800,
     height: 200,
@@ -232,7 +301,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
   }
 
   componentWillUnmount() {
-    this.smoothie.stop();
+    this.detachStreaming();
   }
 
   componentDidUpdate(prevProps: SmoothieComponentProps, prevState: SmoothieComponentState) {
@@ -246,6 +315,80 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
     for (const s of series) {
       if (!prevSeries.includes(s)) this.smoothie.addTimeSeries(s.data, seriesOptsParser(s));
     }
+
+    this.syncStreaming();
+  }
+
+  private handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
+    this.canvas = canvas;
+    this.syncStreaming();
+  };
+
+  /** The coordinator this chart should register with, or `null` to self-animate */
+  private activeCoordinator(): RenderCoordinator | null {
+    // No provider above us: coordinate by default via the shared global loop
+    if (this.context === undefined) return globalCoordinator;
+    return this.context.coordinator;
+  }
+
+  /**
+   * Make the chart's animation match the current canvas, context, and props.
+   * Idempotent; called on canvas (un)mount and on every update.
+   */
+  private syncStreaming() {
+    const canvas = this.canvas;
+    const coordinator = canvas ? this.activeCoordinator() : null;
+    const internals = this.smoothie as SmoothieChartInternals;
+
+    if (this.streaming && (this.streaming.canvas !== canvas || this.streaming.coordinator !== coordinator)) {
+      this.detachStreaming();
+    }
+
+    if (!canvas) return;
+
+    if (!this.streaming) {
+      this.smoothie.streamTo(canvas, this.props.streamDelay);
+
+      if (coordinator) {
+        // The coordinator drives rendering; stop the chart's own animation loop. stop() also
+        // removes the chart's mouse listeners, so re-add them to keep tooltips working.
+        this.smoothie.stop();
+        canvas.addEventListener('mousemove', internals.mousemove);
+        canvas.addEventListener('mouseout', internals.mouseout);
+      }
+
+      this.streaming = { canvas, coordinator };
+    }
+
+    // Pick up streamDelay changes (this is all streamTo() does with it)
+    internals.delay = this.props.streamDelay;
+
+    if (coordinator) {
+      // Also updates per-chart options of an already-registered chart
+      coordinator.register(this.smoothie, { paused: this.props.paused });
+    } else if (this.props.paused) {
+      this.smoothie.stop();
+    } else {
+      this.smoothie.start();
+    }
+  }
+
+  /** Undo whatever syncStreaming() set up. Idempotent. */
+  private detachStreaming() {
+    this.smoothie.stop();
+
+    if (!this.streaming) return;
+
+    const { canvas, coordinator } = this.streaming;
+
+    if (coordinator) {
+      const internals = this.smoothie as SmoothieChartInternals;
+      coordinator.unregister(this.smoothie);
+      canvas.removeEventListener('mousemove', internals.mousemove);
+      canvas.removeEventListener('mouseout', internals.mouseout);
+    }
+
+    this.streaming = undefined;
   }
 
   render() {
@@ -280,7 +423,7 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
         style={style}
         width={this.props.responsive === true ? undefined : this.props.width}
         height={this.props.height}
-        ref={canv => (this.canvas = canv) && this.smoothie.streamTo(canv, this.props.streamDelay)}
+        ref={this.handleCanvasRef}
       />
     );
 
@@ -321,3 +464,5 @@ class SmoothieComponent extends React.Component<SmoothieComponentProps, Smoothie
 }
 
 export { SmoothieComponent as default, TimeSeries, DefaultTooltip };
+export { RenderCoordinator, globalCoordinator };
+export type { RenderCoordinatorOptions };

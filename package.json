@@ -27,12 +27,15 @@
   "files": [
     "SmoothieComponent.js",
     "SmoothieComponent.d.ts",
+    "RenderCoordinator.js",
+    "RenderCoordinator.d.ts",
     "example.tsx"
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
     "dev": "nodemon -w webpack.config.ts -w tsconfig.json -w package.json --exec webpack serve",
     "build": "tsc",
+    "test": "vitest run",
     "prepare": "npm run build"
   },
   "dependencies": {
@@ -42,10 +45,13 @@
     "react": ">=16.8"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "html-webpack-plugin": "^5.6.7",
     "install-vscode-extensions": "1.0.0",
+    "jsdom": "^29.1.1",
     "nodemon": "^3.1.14",
     "prettier": "^3.9.4",
     "react": "^19.2.7",
@@ -54,6 +60,7 @@
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
+    "vitest": "^4.1.9",
     "webpack": "^5.108.3",
     "webpack-cli": "^7.1.0",
     "webpack-dev-server": "^5.2.5"

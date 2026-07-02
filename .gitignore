@@ -3,6 +3,8 @@
 # Generated dist files
 /SmoothieComponent.js
 /SmoothieComponent.d.ts
+/RenderCoordinator.js
+/RenderCoordinator.d.ts
 
 # Generated test files
 /test

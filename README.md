@@ -175,6 +175,14 @@ _default: `0` (ms)_
 
 Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
 
+#### `paused`
+
+_default: `false`_
+
+Freeze this chart (skip its frames) while `true`.
+The chart stays mounted and registered and resumes cleanly when unpaused.
+To pause a whole group of charts at once, use [`<SmoothieProvider paused>`](#synchronized-rendering) instead.
+
 ### Responsive charts
 
 Experimental support for responsive charts was added in 0.3.0.
@@ -215,6 +223,66 @@ var ts = this.refs.chart.addTimeSeries(
 );
 
 ts.append(new Date().getTime(), Math.random());
+```
+
+## Synchronized rendering
+
+Smoothie Charts runs one `requestAnimationFrame` loop per chart, so ten charts means ten
+independent loops redrawing at the display refresh rate.
+Since `0.14.0`, react-smoothie instead drives **all charts from a single shared animation
+loop by default** — no configuration or provider needed, and no visual difference.
+With many charts on one page this is a significant reduction in scheduling and rendering
+overhead.
+
+Rendering also stops entirely while the browser tab is hidden and resumes (without a
+visual jump) when it becomes visible again.
+
+### `<SmoothieProvider>`
+
+Wrap a subtree in `<SmoothieProvider>` to control its rendering as a group.
+Charts inside it share their own loop, separate from the default global one.
+The nearest provider wins.
+
+```tsx
+import SmoothieComponent, { SmoothieProvider } from 'react-smoothie';
+
+<SmoothieProvider fps={30} paused={paused}>
+  <SmoothieComponent series={...} />
+  <SmoothieComponent series={...} />
+</SmoothieProvider>;
+```
+
+#### `fps`
+
+_default: `0` (uncapped)_
+
+Maximum frame rate for the subtree's charts, in frames per second.
+`0` renders at the display refresh rate.
+Charts' own `limitFPS` options still apply on top of this.
+
+#### `paused`
+
+_default: `false`_
+
+Freeze all charts in the subtree while `true`. Unpausing resumes cleanly.
+
+#### `coordinate`
+
+_default: `true`_
+
+Set to `false` to opt the subtree out of synchronized rendering and restore the old
+behavior where every chart runs its own Smoothie-driven animation loop.
+
+### Without a provider
+
+Charts outside any provider register with a global coordinator, exported as
+`globalCoordinator`, which can be used to cap or pause everything without touching JSX:
+
+```ts
+import { globalCoordinator } from 'react-smoothie';
+
+globalCoordinator.setFps(30);
+globalCoordinator.setPaused(true);
 ```
 
 ## Test / Example

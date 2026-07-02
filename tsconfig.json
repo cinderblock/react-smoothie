@@ -1,5 +1,5 @@
 {
-  "files": ["SmoothieComponent.tsx", "example.tsx", "markdown.d.ts"],
+  "files": ["SmoothieComponent.tsx", "RenderCoordinator.ts", "example.tsx", "markdown.d.ts"],
   "compilerOptions": {
     // "noImplicitAny": true,
     "module": "CommonJS",
