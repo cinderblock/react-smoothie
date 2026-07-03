@@ -6,10 +6,11 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
+          cache: npm
 
       # Install dependencies and Build
       - run: npm ci
@@ -27,14 +28,34 @@ jobs:
       # Required for npm Trusted Publishing (OIDC); also enables provenance
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
+          cache: npm
           registry-url: 'https://registry.npmjs.org'
+
+      # The tag must match the version being published
+      - name: Check tag matches package version
+        run: test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
 
       # Install dependencies and Build
       - run: npm ci
 
       # Publish via Trusted Publishing (configured on npmjs.com; no token needed)
       - run: npm publish
+
+  release:
+    name: GitHub Release
+    needs: publishNpm
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      # Create a GitHub Release for the tag with generated notes
+      - run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
