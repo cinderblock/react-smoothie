@@ -38,6 +38,8 @@ const { default: SmoothieComponent, TimeSeries } = require('react-smoothie');
 import SmoothieComponent, { TimeSeries } from 'react-smoothie';
 ```
 
+As of `1.0.0` the package ships native ESM alongside CommonJS; bundlers and Node pick the right build automatically.
+
 ### New prop based API
 
 ```tsx
@@ -291,6 +293,14 @@ Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the pag
 Don't forget to run `yarn` or `npm install` first to install dependencies.
 
 ## Change Log
+
+### v1.0.0
+
+- Dual CommonJS + ESM builds in `dist/` with an `exports` map and TypeScript types for both
+- Publish via npm Trusted Publishing (OIDC) with provenance — no npm tokens
+- GitHub Releases created automatically on each version tag
+- `sideEffects: false` for better tree-shaking
+- Remove GitHub Packages publishing (its npm registry requires scoped package names)
 
 ### v0.14.0
 
