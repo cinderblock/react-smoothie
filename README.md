@@ -2,6 +2,8 @@
 
 Realtime streaming charts for React, backed by [uPlot](https://github.com/leeoniya/uPlot).
 
+**[Live demo →](https://cinderblock.github.io/react-smoothie/)**
+
 Append values to a `TimeSeries` buffer and the chart follows "now" with a trailing window,
 rendered from one shared animation loop for every chart on the page. Unlike its
 [smoothie](http://smoothiecharts.org/)-based v1 ancestor, v2 lets you **zoom into live
