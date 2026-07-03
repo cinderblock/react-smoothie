@@ -7,16 +7,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
+      - uses: oven-sh/setup-bun@v2
 
-      # Install dependencies and Build
-      - run: npm ci
+      # Install dependencies (prepare runs the build)
+      - run: bun install --frozen-lockfile
 
-      # Test
-      - run: npm test
+      - run: bun run typecheck
+
+      # Browser-mode tests run against real Chromium
+      - run: bunx playwright install chromium --with-deps
+      - run: bun run test
+
+      # Validate the package the tarball consumers will actually get
+      - run: bun run build
+      - run: bunx publint
+      # --exclude-entrypoints ./style.css: a CSS export has no JS/type resolution by design
+      - run: bunx @arethetypeswrong/cli --pack --profile esm-only --exclude-entrypoints ./style.css .
 
   publishNpm:
     name: Publish Npm
@@ -29,10 +35,11 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      # npm CLI does the publish (Trusted Publishing); node 24 bundles a new enough npm
       - uses: actions/setup-node@v5
         with:
           node-version: 24
-          cache: npm
           registry-url: 'https://registry.npmjs.org'
 
       # The tag must match the version being published
@@ -40,7 +47,7 @@ jobs:
         run: test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
 
       # Install dependencies and Build
-      - run: npm ci
+      - run: bun install --frozen-lockfile
 
       # Publish via Trusted Publishing (configured on npmjs.com; no token needed).
       # Prerelease versions go to the "next" dist-tag so "latest" stays on stable.

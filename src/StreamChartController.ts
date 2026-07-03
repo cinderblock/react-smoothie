@@ -438,7 +438,7 @@ function yRange(
   min: number | undefined,
   max: number | undefined,
   dataMin: number | null,
-  dataMax: number | null,
+  dataMax: number | null
 ): [number, number] {
   let lo = min ?? dataMin ?? 0;
   let hi = max ?? dataMax ?? 1;

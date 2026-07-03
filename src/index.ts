@@ -4,7 +4,13 @@ export type { TimeSeriesOptions, SampleValue } from './TimeSeries.js';
 export { useTimeSeries } from './useTimeSeries.js';
 
 export { StreamChart, LiveBadge, DefaultTooltip, StreamContext } from './StreamChart.js';
-export type { StreamChartProps, StreamChartHandle, LiveBadgeProps, TooltipProps, StreamContextValue } from './StreamChart.js';
+export type {
+  StreamChartProps,
+  StreamChartHandle,
+  LiveBadgeProps,
+  TooltipProps,
+  StreamContextValue,
+} from './StreamChart.js';
 
 export { StreamChartGroup } from './StreamChartGroup.js';
 export type { StreamChartGroupProps } from './StreamChartGroup.js';

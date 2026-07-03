@@ -18,8 +18,7 @@ function feed(ts: TimeSeries, spanMs = 5000, hz = 100): TimeSeries {
 
 function frames(n: number): Promise<void> {
   return new Promise(resolve => {
-    const step = (remaining: number) =>
-      remaining <= 0 ? resolve() : requestAnimationFrame(() => step(remaining - 1));
+    const step = (remaining: number) => (remaining <= 0 ? resolve() : requestAnimationFrame(() => step(remaining - 1)));
     step(n);
   });
 }
@@ -36,7 +35,7 @@ function mouse(target: EventTarget, type: string, clientX: number, clientY: numb
       // workaround); synthetic events default movementX/Y to 0, so claim movement.
       movementX: 1,
       movementY: 0,
-    }),
+    })
   );
 }
 
@@ -63,7 +62,11 @@ async function drag(handle: StreamChartHandle, fromFraction: number, toFraction:
   await frames(1);
 }
 
-function chart(ref: React.Ref<StreamChartHandle>, series: TimeSeries, extra?: Partial<React.ComponentProps<typeof StreamChart>>) {
+function chart(
+  ref: React.Ref<StreamChartHandle>,
+  series: TimeSeries,
+  extra?: Partial<React.ComponentProps<typeof StreamChart>>
+) {
   return (
     <StreamChart
       ref={ref}
@@ -174,7 +177,7 @@ describe('StreamChart (real browser)', () => {
       <div>
         {chart(refA, a, { syncKey: 'pair' })}
         {chart(refB, b, { syncKey: 'pair' })}
-      </div>,
+      </div>
     );
 
     await frames(2);

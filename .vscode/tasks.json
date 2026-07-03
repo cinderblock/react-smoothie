@@ -4,7 +4,7 @@
     {
       "label": "Launch Development Server",
       "type": "shell",
-      "command": "npm",
+      "command": "bun",
       "args": ["run", "dev"],
       "presentation": {
         "panel": "shared"
@@ -16,9 +16,9 @@
       "group": "build"
     },
     {
-      "label": "Compile to CommonJS",
+      "label": "Build Library",
       "type": "shell",
-      "command": "npm",
+      "command": "bun",
       "args": ["run", "build"],
       "presentation": {
         "panel": "shared"
@@ -31,6 +31,20 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "test"],
+      "presentation": {
+        "panel": "shared"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "problemMatcher": [],
+      "group": "test"
     }
   ]
 }

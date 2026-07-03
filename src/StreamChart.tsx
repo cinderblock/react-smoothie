@@ -219,7 +219,7 @@ export const StreamChart = React.forwardRef<StreamChartHandle, StreamChartProps>
   const view: ViewState = React.useSyncExternalStore(
     React.useCallback(onChange => group.subscribe(onChange), [group]),
     () => group.view,
-    () => group.view,
+    () => group.view
   );
 
   const config = {
@@ -315,7 +315,7 @@ export const StreamChart = React.forwardRef<StreamChartHandle, StreamChartProps>
         return group.view.live ? null : group.view.range;
       },
     }),
-    [group, delay, windowProp],
+    [group, delay, windowProp]
   );
 
   const Badge = liveBadge === true ? LiveBadge : liveBadge || null;

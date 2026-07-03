@@ -4,9 +4,7 @@
  * - detached: the viewport is frozen to an absolute time range (the user zoomed/panned into
  *   the past). Data keeps streaming into buffers behind the scenes.
  */
-export type ViewState =
-  | { live: true }
-  | { live: false; range: [min: number, max: number] };
+export type ViewState = { live: true } | { live: false; range: [min: number, max: number] };
 
 let anonymousGroups = 0;
 

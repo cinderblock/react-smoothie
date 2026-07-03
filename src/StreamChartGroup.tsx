@@ -45,7 +45,7 @@ export function StreamChartGroup(props: StreamChartGroupProps) {
 
   const value = React.useMemo<StreamContextValue>(
     () => ({ coordinator, group: sync ? group : null }),
-    [coordinator, group, sync],
+    [coordinator, group, sync]
   );
 
   return <StreamContext.Provider value={value}>{children}</StreamContext.Provider>;

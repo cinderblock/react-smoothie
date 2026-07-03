@@ -1,377 +1,184 @@
 # react-smoothie
 
-React wrapper for [Smoothie Charts](http://smoothiecharts.org/).
+Realtime streaming charts for React, backed by [uPlot](https://github.com/leeoniya/uPlot).
+
+Append values to a `TimeSeries` buffer and the chart follows "now" with a trailing window,
+rendered from one shared animation loop for every chart on the page. Unlike its
+[smoothie](http://smoothiecharts.org/)-based v1 ancestor, v2 lets you **zoom into live
+data**: drag to inspect the past while data keeps streaming, wheel to change the timebase,
+double-click to snap back to live — synchronized across charts by default.
+
+> **v2 is a rewrite.** The smoothie backend and v1 API are gone (v1 remains on the
+> [`latest` dist-tag](https://www.npmjs.com/package/react-smoothie) until v2 stabilizes).
+> See [Migrating from v1](#migrating-from-v1).
 
 ## Install
 
-With Yarn:
-
 ```bash
-yarn add react-smoothie
+npm install react-smoothie@next react
 ```
 
-With NPM:
+React ≥ 18 is a peer dependency. `uplot` comes along as a regular dependency.
 
-```bash
-npm install react-smoothie --save
-```
-
-### Install from GitHub
-
-```bash
-npm i cinderblock/react-smoothie
-```
-
-## Usage
-
-There are 2 main ways to populate data.
-
-- Original `ref` based `addTimeSeries()`
-- New _(added in `0.4.0`)_ props based with reference to TimeSeries
-
-### Import / Require
-
-Both import or require work
-
-```javascript
-const { default: SmoothieComponent, TimeSeries } = require('react-smoothie');
-import SmoothieComponent, { TimeSeries } from 'react-smoothie';
-```
-
-As of `1.0.0` the package ships native ESM alongside CommonJS; bundlers and Node pick the right build automatically.
-
-### New prop based API
+## Quickstart
 
 ```tsx
-const ts1 = new TimeSeries({});
-const ts2 = new TimeSeries({
-  resetBounds: true,
-  resetBoundsInterval: 3000,
+import { StreamChart, useTimeSeries } from 'react-smoothie';
+import 'react-smoothie/style.css'; // uPlot's stylesheet, required once per app
+
+function Monitor({ socket }) {
+  const ts = useTimeSeries();
+
+  useEffect(() => {
+    socket.on('sample', (value: number) => ts.append(value)); // timestamped "now"
+  }, [socket, ts]);
+
+  return (
+    <StreamChart
+      height={300}
+      window={30_000} // show the trailing 30s
+      tooltip
+      series={[{ data: ts, label: 'load', stroke: 'tomato', width: 2 }]}
+    />
+  );
+}
+```
+
+Charts are **responsive by default** (they fill their container and track resizes); pass
+`width` for a fixed size. Outside React, `new TimeSeries()` works the same as the hook.
+
+## The live/detached model
+
+Streaming charts have a moving x-axis, so v2 has two viewport states, borrowed from
+oscilloscopes and DVRs:
+
+- **Live** — the right edge is pinned to now; the view is "the trailing `window` ms".
+- **Detached** — the viewport is frozen to an absolute time range; data keeps streaming
+  into the buffers behind it. A **⏸ / LIVE badge** appears (click it to resume).
+
+Gestures map onto those states:
+
+| Gesture                        | While live                                     | While detached               |
+| ------------------------------ | ---------------------------------------------- | ---------------------------- |
+| Wheel                          | Change the timebase (trailing window duration) | Zoom around the cursor       |
+| Drag horizontally              | Box-zoom into the past → **detaches**          | Box-zoom further             |
+| Shift+wheel / horizontal wheel | Pan into the past → **detaches**               | Pan                          |
+| Double-click                   | —                                              | Back to live, reset timebase |
+| Hover (`pauseOnHover`)         | Freeze the viewport so tooltips are readable   | already frozen               |
+
+Panning or zooming back until the right edge reaches "now" snaps the chart back to live.
+
+All of it is controllable from the app, too — the standard controlled/uncontrolled React
+pattern: leave `live`/`viewRange` unset and gestures just work, or drive them and receive
+gestures via `onLiveChange`/`onViewRangeChange`.
+
+## Data: `TimeSeries`
+
+```ts
+const ts = new TimeSeries({
+  retention: 5 * 60_000, // keep 5 minutes of history (default)
+  maxRetention: 30 * 60_000, // hard memory bound, even while zoomed into the past
 });
 
-setInterval(() => {
-  var time = new Date().getTime();
-
-  ts1.append(time, Math.random());
-  ts2.append(time, Math.random());
-}, 500);
-
-var TestComponent = React.createClass({
-  render() {
-    return (
-      <SmoothieComponent
-        responsive
-        height={300}
-        series={[
-          {
-            data: ts1,
-            strokeStyle: { g: 255 },
-            fillStyle: { g: 255 },
-            lineWidth: 4,
-          },
-          {
-            data: ts2,
-            strokeStyle: { r: 255 },
-            fillStyle: { r: 255 },
-            lineWidth: 4,
-          },
-        ]}
-      />
-    );
-  },
-});
+ts.append(value); // timestamp defaults to Date.now() — the common case
+ts.append(value, timestamp); // explicit epoch-ms timestamp (non-decreasing)
+ts.appendGap(); // explicit break in the line (e.g. sensor disconnected)
+ts.clear();
 ```
 
-### Old reference based API
+- One `TimeSeries` can feed any number of charts.
+- **Retention** is measured relative to the newest sample, so replayed/historical data
+  works identically to live data (see `timeMode: 'data'` for driving "now" from the data).
+- A chart detached into the past temporarily _holds_ its visible range in the buffer, but
+  never past `maxRetention` (default 6× `retention`) — memory is strictly bounded, and
+  data older than the cap evaporates even while on screen.
+- Series may have different timestamps; charts align them per frame (uPlot's join). Use
+  `spanGaps` per series to connect over explicit gaps.
+
+## `<StreamChart>` props
+
+| Prop                              | Default      | Description                                                                                                        |
+| --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `series`                          | required     | `{ data, label?, stroke?, fill?, width?, dash?, paths?, spanGaps? }[]` — `paths`: `'linear' \| 'step' \| 'spline'` |
+| `window`                          | `30_000`     | Trailing view duration while live, ms                                                                              |
+| `delay`                           | `0`          | Render this far in the past (hides right-edge sample pop-in); was v1 `streamDelay`                                 |
+| `min` / `max`                     | auto         | Y bounds; unset sides auto-range over _visible_ data                                                               |
+| `height`                          | `200`        | CSS px                                                                                                             |
+| `width`                           | responsive   | Fixed CSS px; omit to fill the container                                                                           |
+| `live` / `onLiveChange`           | uncontrolled | Controlled live/detached state                                                                                     |
+| `viewRange` / `onViewRangeChange` | uncontrolled | Controlled absolute range (epoch ms) while detached                                                                |
+| `pauseOnHover`                    | `true`       | Freeze the group's viewport while hovering                                                                         |
+| `zoom`                            | `true`       | Master switch for zoom/pan gestures                                                                                |
+| `syncKey`                         | inherited    | `string` app-wide named group, `false` fully independent                                                           |
+| `paused`                          | `false`      | Skip this chart's frames                                                                                           |
+| `timeMode`                        | `'clock'`    | `'data'` drives "now" from the newest sample (replay/simulation)                                                   |
+| `liveBadge`                       | `true`       | `false` to hide, or a custom `ComponentType<LiveBadgeProps>`                                                       |
+| `tooltip`                         | `false`      | `true` for the default, or a custom `ComponentType<TooltipProps>`                                                  |
+| `uplot`                           | —            | Escape hatch: deep-merged over the generated uPlot options                                                         |
+| `className` / `style`             | —            | Container passthroughs                                                                                             |
+
+The ref exposes `{ uplot, group, setLive(), getViewRange() }` — `uplot` is the real uPlot
+instance, nothing hidden.
+
+## Groups: shared loops and synchronized zoom
+
+Every chart belongs to a **sync group**: zooming, panning, detaching, the timebase, and
+hover-freezing apply to the whole group, and cursors are synced (uPlot native). By default
+all charts on the page share one group — zoom one and they all follow. Scope it with a
+provider, name it with `syncKey`, or opt a chart out entirely:
 
 ```tsx
-var TestComponent = React.createClass({
-  render() {
-    return <SmoothieComponent ref="chart" responsive height={300} />;
-  },
+import { StreamChartGroup } from 'react-smoothie';
 
-  componentDidMount() {
-    // Initialize TimeSeries yourself
-    var ts1 = new TimeSeries({});
+<StreamChartGroup fps={30} paused={holdEverything} sync>
+  <StreamChart … /> {/* these two zoom/pause together, capped at 30fps, */}
+  <StreamChart … /> {/* on their own animation loop */}
+</StreamChartGroup>;
 
-    this.refs.chart.addTimeSeries(ts1, {
-      strokeStyle: 'rgba(0, 255, 0, 1)',
-      fillStyle: 'rgba(0, 255, 0, 0.2)',
-      lineWidth: 4,
-    });
-
-    // Or let addTimeSeries create a new instance of TimeSeries for us
-    var ts2 = this.refs.chart.addTimeSeries(
-      {
-        resetBounds: true,
-        resetBoundsInterval: 3000,
-      },
-      {
-        strokeStyle: { r: 255 },
-        fillStyle: { r: 255 },
-        lineWidth: 4,
-      }
-    );
-
-    this.dataGenerator = setInterval(() => {
-      var time = new Date().getTime();
-
-      ts1.append(time, Math.random());
-      ts2.append(time, Math.random());
-    }, 500);
-  },
-
-  componentWillUnmount() {
-    clearInterval(this.dataGenerator);
-  },
-});
+<StreamChart syncKey="left-column" … />; // app-wide named group
+<StreamChart syncKey={false} … />; // fully independent
 ```
 
-### More Examples
-
-See [`example.tsx`](example.tsx) for a relatively standalone and complete example.
-
-## Props
-
-`SmoothieComponent`'s props are all passed as the options object to the _Smoothie Charts_ constructor.
-
-```tsx
-<SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
-```
-
-### Extra props
-
-There are some extra props that control other behaviors.
-
-#### `tooltip`
-
-Generate a tooltip on mouseover
-
-- `false` does not enable tooltip
-- `true` enables a default tooltip (generated by `react-smoothie`)
-- `function` that returns a stateless React component
-
-_default: `false`_
-
-#### `responsive`
-
-Enabling responsive mode automatically sets the width to `100%`.
-
-_default: `false`_
-
-#### `width`
-
-Control the width of the `<canvas>` used.
-
-_default: `800`_
-
-#### `height`
-
-Control the height of the `<canvas>` used.
-
-_default: `200`_
-
-#### `streamDelay`
-
-_default: `0` (ms)_
-
-Delay the displayed chart. This value is passed after the component mounts as the second argument to `SmoothieChart.streamTo`.
-
-#### `paused`
-
-_default: `false`_
-
-Freeze this chart (skip its frames) while `true`.
-The chart stays mounted and registered and resumes cleanly when unpaused.
-To pause a whole group of charts at once, use [`<SmoothieProvider paused>`](#synchronized-rendering) instead.
-
-### Responsive charts
-
-Experimental support for responsive charts was added in 0.3.0.
-Simply set the `responsive` prop to `true` and canvas will use the full width of the parent container.
-Height is still a controlled prop.
-
-### TimeSeries
-
-`TimeSeries` is the main class that _Smoothie Charts_ uses internally for each series of data.
-There are two ways to access and use these objects, corresponding to the two API versions.
-
-#### New API
-
-`TimeSeries` is available as an import.
-
-```tsx
-const ts1 = new TimeSeries();
-ts1.append(time, Math.random());
-```
-
-#### Old API
-
-`TimeSeries` is exposed via the `addTimeSeries()` function.
-
-The optional first argument of `addTimeSeries()` gets passed as the options to the `TimeSeries` constructor.
-The last argument of `addTimeSeries()` gets passed as the options argument of `SmoothieChart.addTimeSeries()`.
-
-As of `0.4.0`, an instance of `TimeSeries` can be passed as an argument to `addTimeSeries()`.
-
-```tsx
-var ts = this.refs.chart.addTimeSeries(
-  {
-    /* Optional TimeSeries opts */
-  },
-  {
-    /* Chart.addTimeSeries opts */
-  }
-);
-
-ts.append(new Date().getTime(), Math.random());
-```
-
-## Synchronized rendering
-
-Smoothie Charts runs one `requestAnimationFrame` loop per chart, so ten charts means ten
-independent loops redrawing at the display refresh rate.
-Since `0.14.0`, react-smoothie instead drives **all charts from a single shared animation
-loop by default** — no configuration or provider needed, and no visual difference.
-With many charts on one page this is a significant reduction in scheduling and rendering
-overhead.
-
-Rendering also stops entirely while the browser tab is hidden and resumes (without a
-visual jump) when it becomes visible again.
-
-### `<SmoothieProvider>`
-
-Wrap a subtree in `<SmoothieProvider>` to control its rendering as a group.
-Charts inside it share their own loop, separate from the default global one.
-The nearest provider wins.
-
-```tsx
-import SmoothieComponent, { SmoothieProvider } from 'react-smoothie';
-
-<SmoothieProvider fps={30} paused={paused}>
-  <SmoothieComponent series={...} />
-  <SmoothieComponent series={...} />
-</SmoothieProvider>;
-```
-
-#### `fps`
-
-_default: `0` (uncapped)_
-
-Maximum frame rate for the subtree's charts, in frames per second.
-`0` renders at the display refresh rate.
-Charts' own `limitFPS` options still apply on top of this.
-
-#### `paused`
-
-_default: `false`_
-
-Freeze all charts in the subtree while `true`. Unpausing resumes cleanly.
-
-#### `coordinate`
-
-_default: `true`_
-
-Set to `false` to opt the subtree out of synchronized rendering and restore the old
-behavior where every chart runs its own Smoothie-driven animation loop.
-
-### Without a provider
-
-Charts outside any provider register with a global coordinator, exported as
-`globalCoordinator`, which can be used to cap or pause everything without touching JSX:
+All charts render from a single `requestAnimationFrame` loop per group (module-wide
+`globalCoordinator` without a provider) — frames stop entirely while the tab is hidden,
+when a group is `paused`, and for detached charts whose data isn't changing, so zooming
+into the past costs ~zero CPU.
 
 ```ts
 import { globalCoordinator } from 'react-smoothie';
-
-globalCoordinator.setFps(30);
+globalCoordinator.setFps(30); // cap every default-loop chart without a provider
 globalCoordinator.setPaused(true);
 ```
 
-## Test / Example
+## Migrating from v1
 
-Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the page on your browser.
-Don't forget to run `yarn` or `npm install` first to install dependencies.
+v2 is a clean break. The pieces map like this:
 
-## Change Log
+| v1                                               | v2                                                                      |
+| ------------------------------------------------ | ----------------------------------------------------------------------- |
+| `SmoothieComponent`                              | `StreamChart`                                                           |
+| `TimeSeries` (smoothie's, `append(time, value)`) | `TimeSeries` (ours, **`append(value, time?)`** — time defaults to now)  |
+| `series={[{ data, strokeStyle: {r,g,b}, … }]}`   | `series={[{ data, stroke: 'red', … }]}` — CSS colors                    |
+| `streamDelay`                                    | `delay`                                                                 |
+| `millisPerPixel` etc. (smoothie options)         | `window` (duration-based view) + `uplot` escape hatch                   |
+| `interpolation`                                  | per-series `paths: 'linear' \| 'step' \| 'spline'`                      |
+| `SmoothieProvider fps paused`                    | `StreamChartGroup fps paused sync`                                      |
+| `chartRef.addTimeSeries()` (legacy ref API)      | removed — pass `series` props                                           |
+| `nonRealtimeData`                                | `timeMode="data"`                                                       |
+| `responsive` (opt-in)                            | responsive by default; `width` for fixed                                |
+| n/a                                              | zoom/pan/detach, retention, sync groups, `useTimeSeries`                |
 
-### v1.0.0
+Also: the package is ESM-only, requires React ≥ 18, and needs
+`import 'react-smoothie/style.css'` once per app.
 
-- Dual CommonJS + ESM builds in `dist/` with an `exports` map and TypeScript types for both
-- Publish via npm Trusted Publishing (OIDC) with provenance — no npm tokens
-- GitHub Releases created automatically on each version tag
-- `sideEffects: false` for better tree-shaking
-- Remove GitHub Packages publishing (its npm registry requires scoped package names)
+## Development
 
-### v0.14.0
+```bash
+bun install
+bun run dev        # Vite demo at localhost:5173
+bun run test       # vitest: unit (jsdom) + gesture tests in real Chromium
+bun run build      # tsdown → dist/
+```
 
-- **Synchronized rendering, on by default**: all charts share a single `requestAnimationFrame`
-  loop instead of one loop per chart. Visually identical; opt out with
-  `<SmoothieProvider coordinate={false}>`
-- New `<SmoothieProvider>` component: per-subtree `fps` cap, `paused`, and `coordinate` opt-out
-- New per-chart `paused` prop
-- Rendering stops while the browser tab is hidden and resumes cleanly
-- `react` is now a peer dependency (`>=16.8`) instead of a direct dependency,
-  fixing possible duplicate-React installs in consumers
-- Improve Types for Canvas drawing (setting gradients)
-- Rewrite of options processing
-- New modern React (with hooks) example
-- Switch to Npm
-- Update all dependencies (React 19, TypeScript 5.9, webpack-dev-server 5)
-- Add test suite (vitest + Testing Library)
-- Fix crash in `componentDidUpdate` when the `series` prop is not used
-- Fix `CanvasGradient` reference error in environments without canvas (SSR)
-
-### v0.13.0
-
-- Remove Yarn restrictions
-
-### v0.12.x
-
-- Update dep to latest
-- Publish to GitHub Packages
-
-### v0.11.0
-
-- Use [`prepare`](https://docs.npmjs.com/misc/scripts#prepublish-and-prepare) script to allow installing from GitHub
-
-### v0.10.0
-
-- Export prop type
-
-### v0.9.0
-
-- TypeScript
-
-### v0.8.0
-
-- Fix tooltip positioning relative
-- Allow setting class via `classNameCanvas`
-
-### v0.7.0
-
-- Allow setting canvas css class
-
-### v0.6.0
-
-- Tooltip support
-
-### v0.5.0
-
-- Single option to set both style colors to be the same
-
-### v0.4.0
-
-- `TimeSeries` can be passed as an argument to `addTimeSeries()`
-- Use object to set style colors
-
-### v0.3.0
-
-- Export as Module
-
-### v0.2.0
-
-- Allow setting `streamDelay` option
-
-### v0.1.0
-
-- Fix passing args to Smoothie Charts
+Releases are tag-driven: pushing `vX.Y.Z` publishes to npm via Trusted Publishing
+(prereleases land on the `next` dist-tag).

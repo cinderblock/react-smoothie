@@ -49,19 +49,15 @@ export function App() {
     <StreamChartGroup fps={fps} paused={paused}>
       <h1>react-smoothie v2</h1>
       <p>
-        Realtime streaming charts for React, backed by{' '}
-        <a href="https://github.com/leeoniya/uPlot">uPlot</a>.
+        Realtime streaming charts for React, backed by <a href="https://github.com/leeoniya/uPlot">uPlot</a>.
       </p>
       <p className="hint">
-        Wheel over a chart to change the timebase (stays live). Drag to zoom into the past —
-        the chart detaches and a badge appears; double-click or hit the badge to return.
-        Hovering pauses the viewport so you can actually read it. All charts in the group
-        zoom together.
+        Wheel over a chart to change the timebase (stays live). Drag to zoom into the past — the chart detaches and a
+        badge appears; double-click or hit the badge to return. Hovering pauses the viewport so you can actually read
+        it. All charts in the group zoom together.
       </p>
-
       <label>
-        <input type="checkbox" checked={paused} onChange={e => setPaused(e.target.checked)} /> pause
-        all rendering
+        <input type="checkbox" checked={paused} onChange={e => setPaused(e.target.checked)} /> pause all rendering
       </label>{' '}
       <label>
         fps cap:{' '}
@@ -73,7 +69,6 @@ export function App() {
         </select>
       </label>{' '}
       <span className="hint">group is {live ? 'live' : 'detached'}</span>
-
       <h2>Two series, one chart</h2>
       <StreamChart
         height={260}
@@ -87,7 +82,6 @@ export function App() {
         onLiveChange={setLive}
         uplot={darkTheme}
       />
-
       <h2>Synchronized charts</h2>
       <p className="hint">Same group: zoom/pan one and the other follows. Cursor is synced too.</p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -106,7 +100,6 @@ export function App() {
           uplot={darkTheme}
         />
       </div>
-
       <h2>Independent chart</h2>
       <p className="hint">
         <code>syncKey={'{false}'}</code>: zooming this one doesn't touch the group, and vice versa.
