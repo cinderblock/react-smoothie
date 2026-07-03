@@ -2,10 +2,4 @@
 
 # Generated dist files
 /dist/
-
-# Generated test files
-/test
-
-# Generated example files
-example.js
-example.d.ts
+/dist-demo/

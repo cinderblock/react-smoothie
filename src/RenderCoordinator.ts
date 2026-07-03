@@ -1,51 +1,12 @@
-import type { SmoothieChart, TimeSeries } from 'smoothie';
-
-// TODO: SmoothieCharts should update their types so that this is less hacky
-type SmoothieChartInternals = SmoothieChart & {
-  // We need to tell TypeScript about some non-exposed internal variables
-
-  canvas?: HTMLCanvasElement;
-  delay?: number;
-  seriesSet: { timeSeries: TimeSeries & { data: [number, number][] } }[];
-};
-
-/**
- * Draw a single frame of a chart, the same way the chart's own animation loop would.
- *
- * Mirrors the body of `SmoothieChart.prototype.start()`'s animate callback, including its
- * `nonRealtimeData` handling. Note that `chart.render()` applies the chart's stream delay
- * (`chart.delay`) itself, so no time argument is passed here.
- */
-export function renderChartFrame(chart: SmoothieChart) {
-  const internals = chart as SmoothieChartInternals;
-
-  if (!internals.canvas) return;
-
-  if (chart.options.nonRealtimeData) {
-    // Find the data point with the latest timestamp and use it as the current time
-    const maxTimeStamp = internals.seriesSet.reduce((max, series) => {
-      const dataSet = series.timeSeries.data;
-
-      if (!dataSet.length) return max;
-
-      let indexToCheck = Math.round((chart.options.displayDataFromPercentile ?? 1) * dataSet.length) - 1;
-      indexToCheck = Math.min(Math.max(indexToCheck, 0), dataSet.length - 1);
-
-      // Timestamp corresponds to element 0 of the data point
-      return Math.max(max, dataSet[indexToCheck][0]);
-    }, 0);
-
-    chart.render(internals.canvas, maxTimeStamp > 0 ? maxTimeStamp : undefined);
-  } else {
-    chart.render();
-  }
+/** Anything the coordinator can drive: gets one call per animation frame while active. */
+export interface CoordinatedChart {
+  /** Draw a frame. `now` is a shared `Date.now()` epoch-ms snapshot for the whole frame. */
+  renderFrame(now: number): void;
 }
 
 export type RenderCoordinatorOptions = {
   /**
    * Maximum frame rate, in frames per second. `0` renders at the display refresh rate.
-   *
-   * Charts' own `limitFPS` options still apply on top of this.
    */
   fps?: number;
 
@@ -54,16 +15,13 @@ export type RenderCoordinatorOptions = {
 };
 
 /**
- * Drives any number of SmoothieCharts from a single `requestAnimationFrame` loop.
- *
- * Charts are expected to already be bound to their canvas (i.e. `streamTo()` has set
- * `chart.canvas` and `chart.delay`) but not self-animating (`chart.stop()`).
+ * Drives any number of charts from a single `requestAnimationFrame` loop.
  *
  * The loop only runs while at least one chart is registered, not paused, and the document
  * is visible; it hard-stops otherwise and resumes cleanly (no frame-rate-limit catch-up).
  */
 export class RenderCoordinator {
-  private registry = new Map<SmoothieChart, { paused: boolean }>();
+  private registry = new Map<CoordinatedChart, { paused: boolean }>();
   private frame?: number;
   private fps: number;
   private paused: boolean;
@@ -79,18 +37,18 @@ export class RenderCoordinator {
    * Add a chart to the coordinated loop, or update its per-chart options if already added.
    * Starts the loop if it isn't running.
    */
-  register(chart: SmoothieChart, options: { paused?: boolean } = {}) {
+  register(chart: CoordinatedChart, options: { paused?: boolean } = {}) {
     this.registry.set(chart, { paused: options.paused ?? false });
     this.sync();
   }
 
   /** Remove a chart from the coordinated loop. Stops the loop when the last chart leaves. */
-  unregister(chart: SmoothieChart) {
+  unregister(chart: CoordinatedChart) {
     this.registry.delete(chart);
     this.sync();
   }
 
-  has(chart: SmoothieChart) {
+  has(chart: CoordinatedChart) {
     return this.registry.has(chart);
   }
 
@@ -168,17 +126,19 @@ export class RenderCoordinator {
   };
 
   private renderAll() {
+    // One time snapshot for the frame so all charts scroll in lockstep
+    const now = Date.now();
     this.registry.forEach(({ paused }, chart) => {
       if (paused) return;
-      renderChartFrame(chart);
+      chart.renderFrame(now);
     });
   }
 }
 
 /**
- * The default coordinator that all charts register with when no `<SmoothieProvider>` overrides it.
+ * The default coordinator that all charts register with when no `<StreamChartGroup>` overrides it.
  *
  * Exposed so the frame rate can be capped (`globalCoordinator.setFps()`) or all default-coordinated
- * charts paused (`globalCoordinator.setPaused()`) without wrapping the app in a provider.
+ * charts paused (`globalCoordinator.setPaused()`) without wrapping the app in a group.
  */
 export const globalCoordinator = new RenderCoordinator();

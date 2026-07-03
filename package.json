@@ -1,7 +1,7 @@
 {
   "name": "react-smoothie",
-  "version": "1.0.0",
-  "description": "React wrapper for Smoothie Charts",
+  "version": "2.0.0-alpha.1",
+  "description": "Realtime streaming charts for React, backed by uPlot",
   "author": "Cameron Tacklind <cameron@tacklind.com>",
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
   "license": "ISC",
@@ -13,71 +13,62 @@
     "url": "git+https://github.com/cinderblock/react-smoothie.git"
   },
   "keywords": [
-    "smoothie",
+    "uplot",
     "chart",
     "streaming",
     "live",
     "realtime",
+    "timeseries",
     "jsx",
     "tsx",
     "react"
   ],
-  "main": "dist/cjs/SmoothieComponent.js",
-  "module": "dist/esm/SmoothieComponent.js",
-  "types": "dist/cjs/SmoothieComponent.d.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/esm/SmoothieComponent.d.ts",
-        "default": "./dist/esm/SmoothieComponent.js"
-      },
-      "require": {
-        "types": "./dist/cjs/SmoothieComponent.d.ts",
-        "default": "./dist/cjs/SmoothieComponent.js"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
+    "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "sideEffects": false,
   "files": [
-    "dist",
-    "example.tsx"
+    "dist"
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
-    "dev": "nodemon -w webpack.config.ts -w tsconfig.json -w package.json --exec webpack serve",
-    "prebuild": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\"",
-    "build": "npm run build:cjs && npm run build:esm && node scripts/write-dist-package-types.mjs",
-    "build:cjs": "tsc -p tsconfig.cjs.json",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "dev": "vite",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "prepare": "npm run build"
+    "prepare": "tsdown"
   },
   "dependencies": {
-    "smoothie": "^1.36.1"
+    "uplot": "^1.6.32"
   },
   "peerDependencies": {
-    "react": ">=16.8"
+    "react": ">=18"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "html-webpack-plugin": "^5.6.7",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/browser-playwright": "^4.1.9",
     "install-vscode-extensions": "1.0.0",
     "jsdom": "^29.1.1",
-    "nodemon": "^3.1.14",
+    "playwright": "^1.61.1",
     "prettier": "^3.9.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
-    "ts-loader": "^9.6.2",
-    "ts-node": "^10.9.2",
+    "tsdown": "^0.22.3",
     "typescript": "^5.9.3",
+    "vite": "^8.1.3",
     "vitest": "^4.1.9",
-    "webpack": "^5.108.3",
-    "webpack-cli": "^7.1.0",
-    "webpack-dev-server": "^5.2.5"
+    "vitest-browser-react": "^2.2.0"
   }
 }

@@ -1,21 +1,15 @@
 {
-  // Dev config: editor, webpack (ts-loader), and vitest.
-  // Library builds use tsconfig.cjs.json / tsconfig.esm.json (see tsconfig.lib.json).
-  "files": [
-    "SmoothieComponent.tsx",
-    "RenderCoordinator.ts",
-    "SmoothieComponent.test.tsx",
-    "example.tsx",
-    "markdown.d.ts"
-  ],
   "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2022", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "target": "es2017",
-    "lib": ["es2018", "dom"],
-    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react"
-  }
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src", "demo", "tsdown.config.ts", "vite.config.ts", "vitest.config.ts"]
 }

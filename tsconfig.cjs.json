@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.lib.json",
-  "compilerOptions": {
-    // Emits CommonJS because the root package.json has no "type" field
-    "module": "node16",
-    "moduleResolution": "node16",
-    "outDir": "dist/cjs"
-  }
-}
