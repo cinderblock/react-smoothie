@@ -22,6 +22,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      # Required for npm Trusted Publishing (OIDC); also enables provenance
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,27 +36,5 @@ jobs:
       # Install dependencies and Build
       - run: npm ci
 
-      # Publish
+      # Publish via Trusted Publishing (configured on npmjs.com; no token needed)
       - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-
-  publishGithub:
-    name: Publish GitHub
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          registry-url: 'https://npm.pkg.github.com'
-
-      # Install dependencies and Build
-      - run: npm ci
-
-      # Publish to GitHub
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
