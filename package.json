@@ -1,6 +1,6 @@
 {
   "name": "react-smoothie",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "description": "React wrapper for Smoothie Charts",
   "author": "Cameron Tacklind <cameron@tacklind.com>",
   "homepage": "https://github.com/cinderblock/react-smoothie#readme",
