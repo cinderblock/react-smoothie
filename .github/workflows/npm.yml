@@ -42,8 +42,14 @@ jobs:
       # Install dependencies and Build
       - run: npm ci
 
-      # Publish via Trusted Publishing (configured on npmjs.com; no token needed)
-      - run: npm publish
+      # Publish via Trusted Publishing (configured on npmjs.com; no token needed).
+      # Prerelease versions go to the "next" dist-tag so "latest" stays on stable.
+      - name: Publish
+        run: |
+          case "$GITHUB_REF_NAME" in
+            *-*) npm publish --tag next ;;
+            *) npm publish ;;
+          esac
 
   release:
     name: GitHub Release
@@ -56,6 +62,11 @@ jobs:
       - uses: actions/checkout@v5
 
       # Create a GitHub Release for the tag with generated notes
-      - run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
+      - name: Create release
+        run: |
+          case "$GITHUB_REF_NAME" in
+            *-*) gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --prerelease ;;
+            *) gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes ;;
+          esac
         env:
           GH_TOKEN: ${{ github.token }}
