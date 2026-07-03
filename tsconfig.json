@@ -1,13 +1,18 @@
 {
-  "files": ["SmoothieComponent.tsx", "RenderCoordinator.ts", "example.tsx", "markdown.d.ts"],
+  // Dev config: editor, webpack (ts-loader), and vitest.
+  // Library builds use tsconfig.cjs.json / tsconfig.esm.json (see tsconfig.lib.json).
+  "files": [
+    "SmoothieComponent.tsx",
+    "RenderCoordinator.ts",
+    "SmoothieComponent.test.tsx",
+    "example.tsx",
+    "markdown.d.ts"
+  ],
   "compilerOptions": {
-    // "noImplicitAny": true,
-    "module": "CommonJS",
-    // "allowJs": true,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "es2017",
     "lib": ["es2018", "dom"],
-    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

@@ -1,4 +1,4 @@
-import { SmoothieChart, TimeSeries } from 'smoothie';
+import type { SmoothieChart, TimeSeries } from 'smoothie';
 
 // TODO: SmoothieCharts should update their types so that this is less hacky
 type SmoothieChartInternals = SmoothieChart & {

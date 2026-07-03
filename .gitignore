@@ -1,10 +1,7 @@
 /node_modules/
 
 # Generated dist files
-/SmoothieComponent.js
-/SmoothieComponent.d.ts
-/RenderCoordinator.js
-/RenderCoordinator.d.ts
+/dist/
 
 # Generated test files
 /test

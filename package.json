@@ -22,19 +22,34 @@
     "tsx",
     "react"
   ],
-  "main": "SmoothieComponent.js",
-  "types": "SmoothieComponent.d.ts",
+  "main": "dist/cjs/SmoothieComponent.js",
+  "module": "dist/esm/SmoothieComponent.js",
+  "types": "dist/cjs/SmoothieComponent.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/SmoothieComponent.d.ts",
+        "default": "./dist/esm/SmoothieComponent.js"
+      },
+      "require": {
+        "types": "./dist/cjs/SmoothieComponent.d.ts",
+        "default": "./dist/cjs/SmoothieComponent.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
-    "SmoothieComponent.js",
-    "SmoothieComponent.d.ts",
-    "RenderCoordinator.js",
-    "RenderCoordinator.d.ts",
+    "dist",
     "example.tsx"
   ],
   "scripts": {
     "setup": "install-vscode-extensions",
     "dev": "nodemon -w webpack.config.ts -w tsconfig.json -w package.json --exec webpack serve",
-    "build": "tsc",
+    "prebuild": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run build:cjs && npm run build:esm && node scripts/write-dist-package-types.mjs",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "test": "vitest run",
     "prepare": "npm run build"
   },

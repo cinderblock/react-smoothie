@@ -1,13 +1,13 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 import 'webpack-dev-server';
 
 const config: Configuration = {
   entry: './example.tsx',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'test'),
+    path: path.resolve(import.meta.dirname, 'test'),
     publicPath: '/',
   },
   mode: 'development',
@@ -27,6 +27,10 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    // Source uses ESM-style './x.js' specifiers that map to .ts/.tsx files
+    extensionAlias: {
+      '.js': ['.ts', '.tsx', '.js'],
+    },
   },
   module: {
     rules: [

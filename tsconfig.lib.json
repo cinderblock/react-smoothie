@@ -1,0 +1,13 @@
+{
+  // Shared options for the published library builds (see tsconfig.cjs.json / tsconfig.esm.json)
+  "files": ["SmoothieComponent.tsx", "RenderCoordinator.ts"],
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": ["es2018", "dom"],
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react"
+  }
+}

@@ -1,8 +1,15 @@
 import * as React from 'react';
 
-import { SmoothieChart, TimeSeries, IChartOptions, ITimeSeriesOptions, ITimeSeriesPresentationOptions } from 'smoothie';
+import smoothie from 'smoothie';
+import type { IChartOptions, ITimeSeriesOptions, ITimeSeriesPresentationOptions } from 'smoothie';
 
-import { RenderCoordinator, RenderCoordinatorOptions, globalCoordinator } from './RenderCoordinator';
+import { RenderCoordinator, RenderCoordinatorOptions, globalCoordinator } from './RenderCoordinator.js';
+
+// smoothie is a UMD/CJS module whose named exports Node's ESM loader cannot statically
+// detect, so grab the runtime values off the default export and re-declare the types.
+const { SmoothieChart, TimeSeries } = smoothie;
+type SmoothieChart = import('smoothie').SmoothieChart;
+type TimeSeries = import('smoothie').TimeSeries;
 
 export type SmoothieContextValue = {
   /** Coordinator rendering this subtree's charts, or `null` when charts should self-animate */
