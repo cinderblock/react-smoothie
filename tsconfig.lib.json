@@ -1,13 +1,18 @@
 {
   // Shared options for the published library builds (see tsconfig.cjs.json / tsconfig.esm.json)
-  "files": ["SmoothieComponent.tsx", "RenderCoordinator.ts"],
+  "files": ["src/SmoothieComponent.tsx", "src/RenderCoordinator.ts"],
   "compilerOptions": {
+    "rootDir": "src",
     "target": "es2017",
     "lib": ["es2018", "dom"],
+    "types": [],
     "declaration": true,
+    // TypeScript 6+ defaults to strict; the sources (and the published .d.ts shape) predate that
+    "strict": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    // Classic runtime (React.createElement) so React 16.8–16.13, which lack react/jsx-runtime, keep working
     "jsx": "react"
   }
 }

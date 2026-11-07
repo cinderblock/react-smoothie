@@ -1,0 +1,61 @@
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }}, React ${{ matrix.react }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        react: [19]
+        include:
+          # The suite needs Testing Library 16, which supports React 18+
+          - os: ubuntu-latest
+            react: 18
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --frozen-lockfile
+
+      - name: Use React ${{ matrix.react }}
+        if: matrix.react != 19
+        run: bun add -d react@^${{ matrix.react }} react-dom@^${{ matrix.react }}
+
+      - run: bun run typecheck
+      - run: bun run format:check
+      - run: bun test
+      - run: bun run build
+
+  package:
+    name: Package smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - run: bun install --frozen-lockfile
+
+      # npm pack runs the prepare script, the same path as a git install
+      - run: npm pack --pack-destination "$RUNNER_TEMP"
+
+      # Install the tarball into a bare consumer and load both module formats under Node
+      - name: require() and import() the packed tarball
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir consumer && cd consumer
+          npm init -y > /dev/null
+          npm install ../react-smoothie-*.tgz react
+          node -e "const m = require('react-smoothie'); if (typeof m.default !== 'function' || !m.TimeSeries) process.exit(1)"
+          node --input-type=module -e "import S, { TimeSeries } from 'react-smoothie'; if (typeof S !== 'function' || !TimeSeries) process.exit(1)"

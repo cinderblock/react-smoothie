@@ -1,6 +1,6 @@
 import React from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test';
+import { act, cleanup, render } from '@testing-library/react';
 import { SmoothieChart } from 'smoothie';
 
 import SmoothieComponent, { SmoothieProvider, TimeSeries } from './SmoothieComponent';
@@ -21,7 +21,25 @@ function pumpFrame(deltaMillis = 16) {
 }
 
 /** Stubbed-out chart draw calls, one per chart per coordinated frame */
-let renderSpy: ReturnType<typeof vi.spyOn>;
+let renderSpy: ReturnType<typeof spyOn>;
+
+/**
+ * Replace a global for one test. Smoothie reads `window.requestAnimationFrame` while the
+ * coordinator uses the bare global; with happy-dom those are different objects, so set both.
+ */
+const stubbedGlobals: { target: Record<string, unknown>; key: string; had: boolean; value: unknown }[] = [];
+function stubGlobal(key: string, value: unknown) {
+  for (const target of new Set([globalThis, window]) as Set<Record<string, unknown>>) {
+    stubbedGlobals.push({ target, key, had: key in target, value: target[key] });
+    target[key] = value;
+  }
+}
+function unstubAllGlobals() {
+  for (const { target, key, had, value } of stubbedGlobals.splice(0).reverse()) {
+    if (had) target[key] = value;
+    else delete target[key];
+  }
+}
 
 let documentHidden = false;
 
@@ -30,17 +48,17 @@ beforeEach(() => {
   nextRafId = 1;
   now = 0;
 
-  vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+  stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
     const id = nextRafId++;
     rafCallbacks.set(id, callback);
     return id;
   });
-  vi.stubGlobal('cancelAnimationFrame', (id: number) => {
+  stubGlobal('cancelAnimationFrame', (id: number) => {
     rafCallbacks.delete(id);
   });
 
-  // jsdom has no 2d canvas context; the coordinator only needs render() to be callable anyway
-  renderSpy = vi.spyOn(SmoothieChart.prototype, 'render').mockImplementation(() => {});
+  // The test DOM has no 2d canvas context; the coordinator only needs render() to be callable anyway
+  renderSpy = spyOn(SmoothieChart.prototype, 'render').mockImplementation(() => {});
 
   documentHidden = false;
   Object.defineProperty(document, 'hidden', { configurable: true, get: () => documentHidden });
@@ -49,8 +67,8 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   delete (document as { hidden?: boolean }).hidden;
-  vi.unstubAllGlobals();
-  vi.restoreAllMocks();
+  unstubAllGlobals();
+  renderSpy.mockRestore();
 });
 
 function setDocumentHidden(hidden: boolean) {
@@ -89,7 +107,9 @@ describe('coordinated rendering (default)', () => {
     render(<SmoothieComponent ref={ref} tooltip />);
 
     const canvas = ref.current!.canvas!;
-    canvas.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+    act(() => {
+      canvas.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+    });
 
     expect((ref.current!.smoothie as unknown as { mouseover: boolean }).mouseover).toBe(true);
   });
