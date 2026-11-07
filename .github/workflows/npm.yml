@@ -1,65 +1,67 @@
+# Publishes to npm on version tags. Keep this file name: the npm Trusted
+# Publisher entry for react-smoothie is bound to it.
 name: Build and Publish
-on: [push, pull_request]
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
 
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
 
-      # Install dependencies and Build
-      - run: npm ci
-
-      # Test
-      - run: npm test
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun test
+      - run: bun run build
 
   publishNpm:
     name: Publish Npm
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
-      # Required for npm Trusted Publishing (OIDC); also enables provenance
+      # Required for npm Trusted Publishing (OIDC) and provenance
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      # npm still does the publish: Trusted Publishing and provenance are npm features
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: npm
           registry-url: 'https://registry.npmjs.org'
 
       # The tag must match the version being published
       - name: Check tag matches package version
         run: test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
 
-      # Install dependencies and Build
-      - run: npm ci
+      - run: bun install --frozen-lockfile
 
       # Publish via Trusted Publishing (configured on npmjs.com; no token needed).
+      # npm publish runs the prepare script, which builds dist/.
       # Prerelease versions go to the "next" dist-tag so "latest" stays on stable.
       - name: Publish
         run: |
           case "$GITHUB_REF_NAME" in
-            *-*) npm publish --tag next ;;
-            *) npm publish ;;
+            *-*) npm publish --provenance --tag next ;;
+            *) npm publish --provenance ;;
           esac
 
   release:
     name: GitHub Release
     needs: publishNpm
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Create a GitHub Release for the tag with generated notes
       - name: Create release
