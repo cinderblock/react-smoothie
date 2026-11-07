@@ -4,7 +4,7 @@
     {
       "label": "Launch Development Server",
       "type": "shell",
-      "command": "npm",
+      "command": "bun",
       "args": ["run", "dev"],
       "presentation": {
         "panel": "shared"
@@ -16,9 +16,9 @@
       "group": "build"
     },
     {
-      "label": "Compile to CommonJS",
+      "label": "Build CommonJS + ESM",
       "type": "shell",
-      "command": "npm",
+      "command": "bun",
       "args": ["run", "build"],
       "presentation": {
         "panel": "shared"

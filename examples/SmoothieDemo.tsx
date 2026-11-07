@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import ReactMarkdown from 'react-markdown';
+import README from '../README.md';
 
-import README from './README.md';
-
-import SmoothieComponent, { SmoothieProvider, TimeSeries } from './SmoothieComponent';
+import SmoothieComponent, { SmoothieProvider, TimeSeries } from '../src/SmoothieComponent.js';
 
 const TS = new TimeSeries();
 const TS2 = new TimeSeries();
@@ -140,21 +138,9 @@ function ProviderDemo() {
   );
 }
 
+/** The README, rendered to HTML at build time by Bun's Markdown loader */
 function Readme() {
-  const [source, setSource] = React.useState<string>();
-  const [fail, setFail] = React.useState(false);
-
-  useEffect(() => {
-    fetch(README)
-      .then(response => response.text())
-      .then(text => setSource(text))
-      .catch(e => {
-        setFail(true);
-        setSource(e.message);
-      });
-  });
-
-  return fail ? <>Failed to load markdown:{source}</> : <ReactMarkdown children={source} />;
+  return <div dangerouslySetInnerHTML={{ __html: README }} />;
 }
 
 createRoot(document.body.appendChild(document.createElement('div'))).render(

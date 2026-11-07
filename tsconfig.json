@@ -1,18 +1,16 @@
 {
-  // Dev config: editor, webpack (ts-loader), and vitest.
+  // Dev config: editor, typecheck, bun test, and the demo.
   // Library builds use tsconfig.cjs.json / tsconfig.esm.json (see tsconfig.lib.json).
-  "files": [
-    "SmoothieComponent.tsx",
-    "RenderCoordinator.ts",
-    "SmoothieComponent.test.tsx",
-    "example.tsx",
-    "markdown.d.ts"
-  ],
+  "include": ["src", "examples", "*.d.ts"],
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "es2017",
     "lib": ["es2018", "dom"],
+    "types": ["bun"],
+    "noEmit": true,
+    // TypeScript 6+ defaults to strict; the sources (and the published .d.ts shape) predate that
+    "strict": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
