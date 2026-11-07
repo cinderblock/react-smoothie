@@ -4,17 +4,14 @@ React wrapper for [Smoothie Charts](http://smoothiecharts.org/).
 
 ## Install
 
-With Yarn:
-
 ```bash
-yarn add react-smoothie
+bun add react-smoothie
+# or
+npm install react-smoothie
 ```
 
-With NPM:
-
-```bash
-npm install react-smoothie --save
-```
+`react` (16.8 or newer) is a peer dependency, so install it alongside if your app doesn't already have it.
+`smoothie` comes along as a regular dependency.
 
 ### Install from GitHub
 
@@ -50,58 +47,59 @@ const ts2 = new TimeSeries({
 });
 
 setInterval(() => {
-  var time = new Date().getTime();
+  const time = Date.now();
 
   ts1.append(time, Math.random());
   ts2.append(time, Math.random());
 }, 500);
 
-var TestComponent = React.createClass({
-  render() {
-    return (
-      <SmoothieComponent
-        responsive
-        height={300}
-        series={[
-          {
-            data: ts1,
-            strokeStyle: { g: 255 },
-            fillStyle: { g: 255 },
-            lineWidth: 4,
-          },
-          {
-            data: ts2,
-            strokeStyle: { r: 255 },
-            fillStyle: { r: 255 },
-            lineWidth: 4,
-          },
-        ]}
-      />
-    );
-  },
-});
+function TestComponent() {
+  return (
+    <SmoothieComponent
+      responsive
+      height={300}
+      series={[
+        {
+          data: ts1,
+          strokeStyle: { g: 255 },
+          fillStyle: { g: 255 },
+          lineWidth: 4,
+        },
+        {
+          data: ts2,
+          strokeStyle: { r: 255 },
+          fillStyle: { r: 255 },
+          lineWidth: 4,
+        },
+      ]}
+    />
+  );
+}
 ```
 
 ### Old reference based API
 
 ```tsx
-var TestComponent = React.createClass({
+class TestComponent extends React.Component {
+  chart = React.createRef<SmoothieComponent>();
+  dataGenerator?: ReturnType<typeof setInterval>;
+
   render() {
-    return <SmoothieComponent ref="chart" responsive height={300} />;
-  },
+    return <SmoothieComponent ref={this.chart} responsive height={300} />;
+  }
 
   componentDidMount() {
     // Initialize TimeSeries yourself
-    var ts1 = new TimeSeries({});
+    const ts1 = new TimeSeries({});
 
-    this.refs.chart.addTimeSeries(ts1, {
+    this.chart.current!.addTimeSeries(ts1, {
       strokeStyle: 'rgba(0, 255, 0, 1)',
       fillStyle: 'rgba(0, 255, 0, 0.2)',
       lineWidth: 4,
     });
 
     // Or let addTimeSeries create a new instance of TimeSeries for us
-    var ts2 = this.refs.chart.addTimeSeries(
+    const ts2 = this.chart.current!.addTimeSeries(
       {
         resetBounds: true,
         resetBoundsInterval: 3000,
@@ -114,30 +112,34 @@ var TestComponent = React.createClass({
     );
 
     this.dataGenerator = setInterval(() => {
-      var time = new Date().getTime();
+      const time = Date.now();
 
       ts1.append(time, Math.random());
       ts2.append(time, Math.random());
     }, 500);
-  },
+  }
 
   componentWillUnmount() {
     clearInterval(this.dataGenerator);
-  },
-});
+  }
+}
 ```
 
 ### More Examples
 
-See [`example.tsx`](example.tsx) for a relatively standalone and complete example.
+See [`examples/SmoothieDemo.tsx`](examples/SmoothieDemo.tsx) for a relatively standalone and complete example.
 
 ## Props
 
 `SmoothieComponent`'s props are all passed as the options object to the _Smoothie Charts_ constructor.
 
 ```tsx
-<SmoothieComponent ref="chart" width={1000} height={300} interpolation="step" />
+<SmoothieComponent width={1000} height={300} interpolation="step" />
 ```
+
+Chart options are read once, when the component mounts.
+Changing them afterwards has no effect yet (see [#14](https://github.com/cinderblock/react-smoothie/issues/14)); give the component a new `key` to rebuild the chart with new options.
+The `series`, `streamDelay` and `paused` props do update live.
 
 ### Extra props
 
@@ -215,16 +217,14 @@ The last argument of `addTimeSeries()` gets passed as the options argument of `S
 As of `0.4.0`, an instance of `TimeSeries` can be passed as an argument to `addTimeSeries()`.
 
 ```tsx
-var ts = this.refs.chart.addTimeSeries(
-  {
-    /* Optional TimeSeries opts */
-  },
-  {
-    /* Chart.addTimeSeries opts */
-  }
+const ts = this.chart.current!.addTimeSeries(
+  // Optional TimeSeries options
+  { resetBounds: true },
+  // SmoothieChart.addTimeSeries options
+  { strokeStyle: { g: 255 }, lineWidth: 2 }
 );
 
-ts.append(new Date().getTime(), Math.random());
+ts.append(Date.now(), Math.random());
 ```
 
 ## Synchronized rendering
@@ -287,12 +287,28 @@ globalCoordinator.setFps(30);
 globalCoordinator.setPaused(true);
 ```
 
-## Test / Example
+## Development
 
-Run `yarn dev` or `npm run dev` to start the Webpack Dev Server and open the page on your browser.
-Don't forget to run `yarn` or `npm install` first to install dependencies.
+This repo uses [Bun](https://bun.sh).
+
+```bash
+bun install
+bun run dev        # demo at http://localhost:3456 (examples/index.html, live reload)
+bun test           # bun:test + happy-dom + Testing Library
+bun run typecheck
+bun run build      # dist/cjs + dist/esm
+```
+
+Releases publish from CI: push a `v*` tag matching `package.json`'s version.
 
 ## Change Log
+
+### Unreleased
+
+- Development toolchain moves to Bun (`bun.lock`, `bun test`, Bun's dev server for the demo),
+  dropping webpack, vitest and jsdom. No change to the published package beyond the demo
+  moving from `example.tsx` to `examples/SmoothieDemo.tsx`
+- CI runs on Ubuntu and Windows, against React 18 and 19, and smoke-tests the packed tarball under Node
 
 ### v1.0.0
 
